@@ -4,7 +4,7 @@ import argparse
 from easydict import EasyDict
 
 
-jsonfile = 'configs/okvqa/DPR.jsonnet'
+jsonfile = './configs/okvqa/DPR.jsonnet'
 config, config_dict = get_config_from_json(jsonfile)
 args = argparse.Namespace(config=jsonfile, reset='your_value', mode='your_value', 
                            experiment_name='your_value', modules=[], tags=[], 
