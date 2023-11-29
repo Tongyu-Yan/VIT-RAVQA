@@ -24,7 +24,7 @@ local default_cache_folder = '/home/ty308/rds/hpc-work/data/ok-vqa/cache';
 local vqa_data = {
   "question_files":{
     "train": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/OpenEnded_mscoco_train2014_questions.json',
-    "test": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqaOpenEnded_mscoco_val2014_questions.json',
+    "test": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/OpenEnded_mscoco_val2014_questions.json',
   },
   "annotation_files": {
     "train": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/mscoco_train2014_annotations.json',
