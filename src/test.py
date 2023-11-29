@@ -16,6 +16,7 @@ config = process_config(args)
 
 dataloader = DataLoaderOKVQA(config)
 dataloader.build_dataset()
+dataloader.set_dataloader()
 
 dataset_modules = config.data_loader.dataset_modules.module_list
 module_config = config.data_loader.dataset_modules.module_dict.LoadOKVQAData
