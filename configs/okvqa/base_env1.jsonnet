@@ -23,44 +23,44 @@ local wandb_cache_dir = ''; //'/home/ty308/rds/hpc-work/data/wandb_cache';
 local default_cache_folder = '/home/ty308/rds/hpc-work/data/ok-vqa/cache';
 local vqa_data = {
   "question_files":{
-    "train": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/OpenEnded_mscoco_train2014_questions.json',
-    "test": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqaOpenEnded_mscoco_val2014_questions.json',
+    "train": '/Users/tonyyan/Downloads/data/ok-vqa/OpenEnded_mscoco_train2014_questions.json',
+    "test": '/Users/tonyyan/Downloads/data/ok-vqa/OpenEnded_mscoco_val2014_questions.json',
   },
   "annotation_files": {
-    "train": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/mscoco_train2014_annotations.json',
-    "test": '/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/mscoco_val2014_annotations.json',
+    "train": '/Users/tonyyan/Downloads/data/ok-vqa/mscoco_train2014_annotations.json',
+    "test": '/Users/tonyyan/Downloads/data/ok-vqa/mscoco_val2014_annotations.json',
   },
 };
 local VinVL_features = {
-  "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/vinvl_output/vinvl_okvqa_trainset_full/inference/vinvl_vg_x152c4/predictions.tsv",
-  "test": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/vinvl_output/vinvl_okvqa_testset_full/inference/vinvl_vg_x152c4/predictions.tsv",
+  "train": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/vinvl_output/vinvl_okvqa_trainset_full/inference/vinvl_vg_x152c4/predictions.tsv",
+  "test": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/vinvl_output/vinvl_okvqa_testset_full/inference/vinvl_vg_x152c4/predictions.tsv",
 };
 local img_data = {
-  "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/train2014",
-  "test": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/val2014",
+  "train": "/Users/tonyyan/Downloads/data/ok-vqa/train2014",
+  "test": "/Users/tonyyan/Downloads/data/ok-vqa/val2014",
 };
 local ocr_features = {
-  "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/OCR/train",
-  "test": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/OCR/valid",
+  "train": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/OCR/train",
+  "test": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/OCR/valid",
   "combine_with_vinvl": true,
 };
 local caption_features = {
-  "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/captions/train_predictions.json",
-  "valid": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/captions/valid_predictions.json",
-  "test": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/captions/test_predictions.json",
+  "train": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/captions/train_predictions.json",
+  "valid": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/captions/valid_predictions.json",
+  "test": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/captions/test_predictions.json",
 };
 local passage_data = {
-  "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/okvqa_train_corpus.csv",
-  "full": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/okvqa_full_corpus.csv",
+  "train": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/passages/okvqa_train_corpus.csv",
+  "full": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/passages/okvqa_full_corpus.csv",
 };
 local pretrained_dpr_features = {
   "train": "../Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/test/test_evaluation/train_predictions.json",
   "test": "../Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/test/test_evaluation/test_predictions.json",
 };
 local dpr_training_annotations = {
-  "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/retriever_train.json",
-  "valid": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/retriever_testdev.json",
-  "test": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/retriever_test.json",
+  "train": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/passages/retriever_train.json",
+  "valid": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/passages/retriever_testdev.json",
+  "test": "/Users/tonyyan/Downloads/data/ok-vqa/pre-extracted_features/passages/retriever_test.json",
 };
 
 

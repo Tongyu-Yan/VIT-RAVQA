@@ -15,13 +15,14 @@ import scipy.sparse as sp
 import random
 import cv2
 import base64
-
+#hi
 from copy import deepcopy
 from pprint import pprint
 from easydict import EasyDict
 from collections import defaultdict
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
-
+from torchvision import transforms
+from PIL import Image
 import logging
 logger = logging.getLogger(__name__)
 
@@ -250,10 +251,27 @@ class DataLoaderOKVQA(DataLoaderWrapper):
         self.data.okvqa_data = EasyDict({
             'train': {},
             'test': {},
+            'image': {},
             'lookup': {},
             'vqa_helpers': vqa_helpers,
         })
         
+
+        ######################
+        # Loadimg function
+        ######################
+        # Add this to your existing data loading method
+        def LoadImg(image_path):
+            transform = transforms.Compose([
+                transforms.Resize((224, 224)),  # Resize to the input dimension of ViT
+                transforms.ToTensor(),
+                transforms.Normalize(0.5, 0.5)  # Adjust these values as needed
+            ])
+            image = Image.open(image_path)
+            image = transform(image).unsqueeze(0)  # Add batch dimension
+            return image
+
+
         for data_split, vqa_helper in vqa_helpers.items():
             vqa_helper.createIndex()
             vqa_helper.info()
@@ -266,11 +284,13 @@ class DataLoaderOKVQA(DataLoaderWrapper):
                 # Create list of images from helper
                 img_data_path = module_config.config.image_data_path[data_split]
                 img_list = []
+                
                 for imgId in vqa_helper.imgToQA.keys():
                     dataSubType = vqa_helper.dataSubType
                     imgFilename = 'COCO_' + dataSubType + '_'+ str(imgId).zfill(12) + '.jpg'
                     img_path = os.path.join(img_data_path, imgFilename)
                     img_list.append((imgId, img_path))
+                    self.data.okvqa_data.image[str(imgId)] = LoadImg(img_path)
                     if self.config.data_loader.dummy_dataloader:
                         # Load only a few samples for testing
                         if len(img_list) > 20:
