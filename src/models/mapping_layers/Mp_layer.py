@@ -21,9 +21,9 @@ if not os.path.isfile(checkpoint_file):
 class MapVIT(pl.LightningModule):
     def __init__(self, vit_output_dim=1000, ravqa_embedding_dim=768):#vit_output_dim=1000
         super(MapVIT, self).__init__()
-        config = CONFIGS["ViT-B_16"]
+        config = CONFIGS["ViT-B_16-224"]
         self.vit = VisionTransformer(config, num_classes=1000, zero_head=False, img_size=224, vis=True)
-        self.vit.load_from(np.load('ViT-B_16.npz'))
+        self.vit.load_from(np.load('ViT-B_16-224.npz'))
         self.vit.eval()
         self.map = nn.Linear(vit_output_dim, ravqa_embedding_dim)
 
