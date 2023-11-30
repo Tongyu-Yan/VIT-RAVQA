@@ -151,9 +151,9 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
-        # size = (8*16)
-        print('in_batch_scores', in_batch_scores.shape)
-        print('in_batch_labels', in_batch_labels.shape)
+        # in_batch_scores size = (8*16)
+        # in_batch_labels size = (8)
+        
         loss = self.loss_fn(in_batch_scores, in_batch_labels)
 
         return EasyDict({
