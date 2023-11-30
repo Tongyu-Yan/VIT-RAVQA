@@ -77,7 +77,7 @@ class RetrieverDPR(pl.LightningModule):
         query_outputs = self.query_encoder(input_ids=input_ids,
                                             attention_mask=attention_mask)
         query_embeddings = query_outputs.pooler_output
-        print('query_embeddings', query_embeddings.shape)
+        #   8*768 for query
         if self.query_pooler is not None:
             query_embeddings = self.query_pooler(query_last_hidden_states)
         # query_embeddings = query_last_hidden_states
@@ -87,6 +87,7 @@ class RetrieverDPR(pl.LightningModule):
         item_outputs = self.item_encoder(input_ids=item_input_ids,
                                             attention_mask=item_attention_mask)
         item_embeddings = item_outputs.pooler_output
+        # 16*768 for item
         print('item_embeddings', item_embeddings.shape)
         if self.item_pooler is not None:
             item_embeddings = self.item_pooler(item_last_hidden_states)
@@ -151,6 +152,7 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
+        print('in_batch_scores', in_batch_scores.shape)
         loss = self.loss_fn(in_batch_scores, in_batch_labels)
 
         return EasyDict({
