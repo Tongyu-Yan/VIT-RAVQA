@@ -2,8 +2,10 @@ import pytorch_lightning as pl
 import torch.nn as nn
 from src.models.VIT.modeling import VisionTransformer
 import os
-os.makedirs("attention_data", exist_ok=True)
-if not os.path.isfile("attention_data/ViT-B_16-224.npz"):
+
+checkpoint_dir = /home/ty308/rds/hpc_work/myvqa
+os.makedirs(checkpoint_dir, exist_ok=True)
+if not os.path.isfile("/home/ty308/rds/hpc_work/myvqa/ViT-B_16-224.npz"):
     urlretrieve("https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/ViT-B_16-224.npz", "attention_data/ViT-B_16-224.npz")
 
 class MapVIT(pl.LightningModule):
