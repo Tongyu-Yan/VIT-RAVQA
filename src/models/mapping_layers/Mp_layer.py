@@ -4,8 +4,8 @@ from urllib.request import urlretrieve
 import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/VIT')
 
-from modeling import VisionTransformer
-from configs import CONFIGS
+from modeling import VisionTransformer, CONFIGS
+
 
 import os
 
