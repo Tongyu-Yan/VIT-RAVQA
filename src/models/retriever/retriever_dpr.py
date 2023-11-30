@@ -8,7 +8,7 @@ from transformers import T5EncoderModel, T5Config
 from transformers import DPRQuestionEncoder, DPRContextEncoder, DPRConfig
 from transformers import BertModel, BertConfig
 from easydict import EasyDict
-
+from src.models.mapping_layers.Mp_layer import MapVIT
 def get_rank():
     return dist.get_rank()
 
@@ -29,7 +29,7 @@ class RetrieverDPR(pl.LightningModule):
     def __init__(self, config):
         super().__init__()
         self.config = config
-
+        self.map = MapVIT(vit_output_dim=1000, ravqa_embedding_dim=768)
         QueryEncoderModelClass = globals()[self.config.model_config.QueryEncoderModelClass]
 
         QueryEncoderConfigClass = globals()[self.config.model_config.QueryEncoderConfigClass]
@@ -80,8 +80,7 @@ class RetrieverDPR(pl.LightningModule):
         #   8*768 for query
         if self.query_pooler is not None:
             query_embeddings = self.query_pooler(query_last_hidden_states)
-        # query_embeddings = query_last_hidden_states
-        # print('query_embeddings', query_embeddings.shape)
+        
 
         # item encoder
         item_outputs = self.item_encoder(input_ids=item_input_ids,

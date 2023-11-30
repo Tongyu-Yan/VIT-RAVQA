@@ -1,13 +1,23 @@
 import pytorch_lightning as pl
 import torch.nn as nn
+from src.models.VIT.modeling import VisionTransformer
+import os
+os.makedirs("attention_data", exist_ok=True)
+if not os.path.isfile("attention_data/ViT-B_16-224.npz"):
+    urlretrieve("https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/ViT-B_16-224.npz", "attention_data/ViT-B_16-224.npz")
 
-class MappingLayer(pl.LightningModule):
-    def __init__(self, vit_output_dim, ravqa_embedding_dim):
+class MapVIT(pl.LightningModule):
+    def __init__(self, vit_output_dim=1000, ravqa_embedding_dim=768):#vit_output_dim=1000
         super(MappingLayer, self).__init__()
-        self.linear = nn.Linear(vit_output_dim, ravqa_embedding_dim)
+        self.vit = VisionTransformer(config, num_classes=1000, zero_head=False, img_size=224, vis=True)
+        self.vit.load_from(np.load('ViT-B_16.npz'))
+        self.vit.eval()
+        self.map = nn.Linear(vit_output_dim, ravqa_embedding_dim)
+
 
     def forward(self, x):
-        return self.linear(x)
+        x = self.vit(x)
+        return self.map(x)
 
     # Optionally, add training, validation, test steps, etc.
 ''' Initialize the mapping layer
