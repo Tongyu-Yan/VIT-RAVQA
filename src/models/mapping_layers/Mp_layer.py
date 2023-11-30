@@ -9,11 +9,15 @@ import numpy as np
 
 import os
 
-checkpoint_dir = 'home/ty308/rds/hpc_work/myvqa'
+# Absolute paths should start with a slash if they are intended to be absolute
+checkpoint_dir = '/home/ty308/rds/hpc_work/myvqa'
 os.makedirs(checkpoint_dir, exist_ok=True)
-if not os.path.isfile("home/ty308/rds/hpc_work/myvqa/ViT-B_16-224.npz"):
-    urlretrieve("https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/ViT-B_16-224.npz", "home/ty308/rds/hpc_work/myvqa/ViT-B_16-224.npz")
-
+checkpoint_file = os.path.join(checkpoint_dir, "ViT-B_16-224.npz")
+if not os.path.isfile(checkpoint_file):
+    urlretrieve(
+        "https://storage.googleapis.com/vit_models/imagenet21k+imagenet2012/ViT-B_16-224.npz",
+        checkpoint_file
+    )
 class MapVIT(pl.LightningModule):
     def __init__(self, vit_output_dim=1000, ravqa_embedding_dim=768):#vit_output_dim=1000
         super(MapVIT, self).__init__()
