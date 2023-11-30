@@ -130,7 +130,7 @@ class DPRExecutor(BaseExecutor):
         })
         
         print('Train_batch.input_ids shape is:',train_batch.input_ids.shape)
-        print('Train_batch.attention_mask shape is:',train_batch.attention_mask.shape)
+        print('item_input_ids shape is:',train_batch.item_input_ids.shape)
         forward_results = self.model(**train_batch)
         batch_loss = forward_results.loss
 
