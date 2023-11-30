@@ -110,7 +110,7 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
             'question': item.question,
             'img_key_full': item.img_key_full,
             #####################
-            'image': item.img,
+            #'image': item.img,
             #####################
             'gold_answer': item.gold_answer,
             'answers': item.answers,
