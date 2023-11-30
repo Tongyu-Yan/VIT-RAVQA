@@ -2,7 +2,7 @@ from data_loader_manager.data_loader_okvqa_with_knowledge import DataLoaderOKVQA
 from utils.config_system import get_config_from_json, process_config
 import argparse
 from easydict import EasyDict
-
+import pickle
 
 jsonfile = '/home/ty308/rds/hpc-work/myvqa/Tony-VQA/configs/okvqa/DPR.jsonnet'
 config, config_dict = get_config_from_json(jsonfile)
@@ -24,4 +24,5 @@ dataset_modules = config.data_loader.dataset_modules.module_list
 module_config = config.data_loader.dataset_modules.module_dict.LoadOKVQAData
 #print("Module Config for", dataset_module, ":", module_config)
 img = dataloader.LoadOKVQAData(module_config)
-print(img)
+with open('img.pkl', 'wb') as f:
+    pickle.dump(img, f)
