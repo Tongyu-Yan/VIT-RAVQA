@@ -186,7 +186,7 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
             'question_ids': question_ids,
             'questions': questions,
             ##################
-            'image':
+            #'image':
             ##################
             'answers': answers,
             'gold_answers': gold_answers,
