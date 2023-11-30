@@ -402,9 +402,7 @@ class DataLoaderOKVQA(DataLoaderWrapper):
         }
         self.train_dataset = globals()[self.config.data_loader.dataset_type](self.config, train_dataset_dict)
         print('note here !!!!!!!!!!!!!!!!!!!!!!')
-        for i in self.train_dataset:
-            pprint(i)
-        #     input()
+        print(self.train_dataset)
         train_sampler = RandomSampler(self.train_dataset)
         # train_sampler = SequentialSampler(self.train_dataset)
         
