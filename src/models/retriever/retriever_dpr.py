@@ -8,7 +8,6 @@ from transformers import T5EncoderModel, T5Config
 from transformers import DPRQuestionEncoder, DPRContextEncoder, DPRConfig
 from transformers import BertModel, BertConfig
 from easydict import EasyDict
-from src.models.mapping_layers.Mp_layer import MapVIT
 import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/mapping_layers')
 from Mp_layer import MapVIT
