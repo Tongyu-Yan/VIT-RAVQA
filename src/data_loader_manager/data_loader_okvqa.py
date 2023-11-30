@@ -381,7 +381,7 @@ class DataLoaderOKVQA(DataLoaderWrapper):
         self.data.okvqa_data.answer_candidate_list = answer_candidate_list
 
         self.data.vqa_data = self.data.okvqa_data
-        return self.data.okvqa_data
+        
 
     def set_dataloader(self):
         """
