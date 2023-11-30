@@ -5,7 +5,7 @@ import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/VIT')
 
 from modeling import VisionTransformer
-from config import CONFIGS
+from configs import CONFIGS
 
 import os
 
