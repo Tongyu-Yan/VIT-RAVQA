@@ -162,7 +162,7 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
-        in_batch_scores = in_batch_scores.view(8*32)
+        #in_batch_scores = in_batch_scores.view(8*32)
         # in_batch_scores size = (8*16)
         # in_batch_labels size = (8)
         
