@@ -272,8 +272,6 @@ class VisionTransformer(nn.Module):#num_classes=21843
 
     def forward(self, x, labels=None):
         x, attn_weights = self.transformer(x)
-        second_last_layer_output = x[:, -2, :]  # Get the second-to-last token for all sequences
-        mapped_output = self.mapping_layer(second_last_layer_output)
 
         logits = self.head(x[:, 0])
         #x, attn_weights = self.transformer(x)
@@ -285,7 +283,7 @@ class VisionTransformer(nn.Module):#num_classes=21843
             loss = loss_fct(logits.view(-1, self.num_classes), labels.view(-1))
             return loss
         else:
-            return logits, mapped_output, attn_weights
+            return logits, attn_weights
 
     def load_from(self, weights):
         with torch.no_grad():
