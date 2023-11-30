@@ -1,4 +1,4 @@
-from data_loader_manager.data_loader_okvqa import DataLoaderOKVQA
+from data_loader_manager.data_loader_okvqa_with_knowledge import DataLoaderOKVQAWithKnowledge
 from utils.config_system import get_config_from_json, process_config
 import argparse
 from easydict import EasyDict
@@ -14,7 +14,7 @@ args = argparse.Namespace(config=jsonfile, reset='your_value', mode='your_value'
 config = process_config(args)
 
 
-dataloader = DataLoaderOKVQA(config)
+dataloader = DataLoaderOKVQAWithKnowledge(config)
 dataloader.build_dataset()
 print('Finished building dataset')
 
