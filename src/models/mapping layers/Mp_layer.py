@@ -1,6 +1,6 @@
 import pytorch_lightning as pl
 import torch.nn as nn
-from src.models.VIT.modeling import VisionTransformer
+from home.ty308.rds.hpc-work.myvqa.Tony-VQA.src.models.VIT.modeling import VisionTransformer
 import os
 
 checkpoint_dir = home/ty308/rds/hpc_work/myvqa
