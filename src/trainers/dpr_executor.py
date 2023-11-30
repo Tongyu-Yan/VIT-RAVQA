@@ -120,6 +120,7 @@ class DPRExecutor(BaseExecutor):
 
 
     def training_step(self, sample_batched, batch_idx):
+        print(sample_batched)
         train_batch = EasyDict({
             'input_ids': sample_batched['input_ids'].to(self.device),
             'attention_mask': sample_batched['attention_mask'].to(self.device),
@@ -127,7 +128,7 @@ class DPRExecutor(BaseExecutor):
             'item_input_ids': sample_batched['decoder_input_ids'].to(self.device),
             'item_attention_mask': sample_batched['decoder_input_attention_mask'].to(self.device),
         })
-        print(train_batch)
+        
         forward_results = self.model(**train_batch)
         batch_loss = forward_results.loss
 
