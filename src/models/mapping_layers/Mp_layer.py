@@ -3,6 +3,10 @@ import torch.nn as nn
 from urllib.request import urlretrieve
 import numpy as np
 import os
+import sys
+sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/VIT')
+
+from modeling import VisionTransformer, CONFIGS
 
 # Define the directory and file path
 checkpoint_dir = '/home/ty308/rds/hpc_work/myvqa'
