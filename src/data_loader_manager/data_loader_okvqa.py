@@ -401,8 +401,8 @@ class DataLoaderOKVQA(DataLoaderWrapper):
             'mode': 'train',
         }
         self.train_dataset = globals()[self.config.data_loader.dataset_type](self.config, train_dataset_dict)
-        print('note here !!!!!!!!!!!!!!!!!!!!!!')
-        print(self.train_dataset)
+        #print('note here !!!!!!!!!!!!!!!!!!!!!!')
+        #print(self.train_dataset)
         train_sampler = RandomSampler(self.train_dataset)
         # train_sampler = SequentialSampler(self.train_dataset)
         
@@ -423,6 +423,9 @@ class DataLoaderOKVQA(DataLoaderWrapper):
             'ocr_features': self.data.ocr_features,
             'answer_candidate_list': self.data.vqa_data.answer_candidate_list,
             'tokenizer': self.tokenizer,
+            #############
+            'img': self.data.vqa_data.image,
+            #############
             'decoder_tokenizer': self.decoder_tokenizer,
             'feature_extractor': self.feature_extractor,
             'mode': 'test',

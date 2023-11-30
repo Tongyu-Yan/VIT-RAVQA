@@ -73,6 +73,9 @@ class RetrieverDPR(pl.LightningModule):
         item_input_ids=None,
         item_attention_mask=None,
         labels=None,
+        #############
+        images=None,
+        #############
         span_labels=None,
         **kwargs
     ):
@@ -83,8 +86,9 @@ class RetrieverDPR(pl.LightningModule):
         #   8*768 for query
         if self.query_pooler is not None:
             query_embeddings = self.query_pooler(query_last_hidden_states)
+        image_embeddings = self.map(images=images)
+        query_embeddings = torch.cat([query_embeddings, image_embeddings], dim=0)
         
-
         # item encoder
         item_outputs = self.item_encoder(input_ids=item_input_ids,
                                             attention_mask=item_attention_mask)
@@ -136,7 +140,7 @@ class RetrieverDPR(pl.LightningModule):
             item_embeddings = torch.cat(global_item_embeddings)
             
 
-        batch_size = query_embeddings.shape[0]
+        batch_size = query_embeddings.shape[0]//2
         batch_size_with_pos_and_neg = item_embeddings.shape[0]
         num_pos_and_neg = batch_size_with_pos_and_neg // batch_size
         num_pos = 1
@@ -153,6 +157,7 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
+        in_batch_scores = in_batch_scores.view(8*32)
         # in_batch_scores size = (8*16)
         # in_batch_labels size = (8)
         
