@@ -3,7 +3,7 @@ import torch.nn as nn
 import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/VIT')
 
-from modelling import VisionTransformer
+from modeling import VisionTransformer
 
 import os
 
