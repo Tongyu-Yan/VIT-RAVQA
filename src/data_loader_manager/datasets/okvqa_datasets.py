@@ -36,7 +36,8 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from data_loader_manager.module_parser import ModuleParser
-
+from PIL import Image
+import torchvision.transforms as transforms
 
 class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
     """
@@ -63,6 +64,18 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
 
     def __getitem__(self, idx):
         item = self.data.data_items[idx]
+        # image_path = os.path.join(self.image_folder, item.img_key_full + '.jpg')
+        # image = Image.open(image_path).convert('RGB')
+
+        # # Transform the image
+        # transform = transforms.Compose([
+        #     transforms.Resize((224, 224)),
+        #     transforms.ToTensor(),
+        # ])
+        # image = transform(image)
+
+        # sample['image'] = image
+
         # Read predictions from VinVL features
         VinVL_prediction = self.vinvl_features.get(item.img_key_full, None)
         if not VinVL_prediction:
@@ -96,7 +109,9 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
             'question_id':  item.question_id,
             'question': item.question,
             'img_key_full': item.img_key_full,
-            'img': item.img,
+            #####################
+            'image': item.img,
+            #####################
             'gold_answer': item.gold_answer,
             'answers': item.answers,
             'objects': objects,
@@ -150,7 +165,12 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         input_data = self.post_processing(input_data, input_post_modules)
         decoder_input_data = self.post_processing(decoder_input_data, decoder_input_post_modules)
         output_data = self.post_processing(output_data, output_post_modules)
-        
+        ###################################
+        #  Tony's image codes
+        ###################################
+        images_tensor = torch.stack(images)
+        # Add images to the batched data
+        batched_data['images'] = images_tensor
 
         #############################
         #  Meta Features

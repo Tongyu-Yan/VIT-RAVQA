@@ -185,6 +185,9 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
         batched_data = EasyDict({
             'question_ids': question_ids,
             'questions': questions,
+            ##################
+            'image':
+            ##################
             'answers': answers,
             'gold_answers': gold_answers,
         })
