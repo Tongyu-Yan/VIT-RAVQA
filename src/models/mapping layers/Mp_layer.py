@@ -1,5 +1,6 @@
 import pytorch_lightning as pl
 import torch.nn as nn
+from urllib.request import urlretrieve
 import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/VIT')
 
