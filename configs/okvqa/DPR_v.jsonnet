@@ -1,4 +1,4 @@
-local base_env = import 'base_env1.jsonnet';
+local base_env = import 'base_env.jsonnet';
 // change this file
 local train_batch_size = 32;
 local valid_batch_size = 32;
@@ -23,6 +23,11 @@ local override = {
   "ignore_pretrained_weights": [],
   "experiment_name": "default_test",
   "seed": seed,
+  "vit_model_config": {
+          "VisionModelConfigClass": "CLIPVisionConfig",
+          "VisionModelClass": "CLIPVisionModel",
+          "VisionModelVersion": "openai/clip-vit-base-patch32",
+        },
   "model_config": {
     "base_model": "DPR",
     "ModelClass": "RetrieverDPR",

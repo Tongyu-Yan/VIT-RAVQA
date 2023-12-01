@@ -15,7 +15,7 @@ import scipy.sparse as sp
 import random
 import cv2
 import base64
-# hello
+
 from copy import deepcopy
 from pprint import pprint
 from easydict import EasyDict
@@ -39,7 +39,7 @@ from data_loader_manager.module_parser import ModuleParser
 from data_loader_manager.datasets.okvqa_datasets import OKVQADataset
 
 
-
+#
 class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
     """
     This is a dataset class for OKVQA dataset used for DPR training
@@ -116,6 +116,7 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
         when collate_fn is given to the torch dataloader, we can do further actions to the batch, e.g., tensor can be formed here
         a batch is formed as a list where each element is a defined data returned by __getitem__, andy
         '''
+        print(batch[0].keys())
         # According to the settings in config file, prepare the input and output
         input_modules = self.config.model_config.input_modules.module_list
         decoder_input_modules = self.config.model_config.decoder_input_modules.module_list

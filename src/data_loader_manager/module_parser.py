@@ -2,9 +2,10 @@ from ast import Raise
 from typing import Optional
 from easydict import EasyDict
 import torch
+from transformers import CLIPProcessor
 # ! change this file
 # 1. input module def imageinput, with a field image
-
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 class ModuleParser():
     """
     This is a module inherited by the dataset class
@@ -24,16 +25,18 @@ class ModuleParser():
     def __init__(self) -> None:
         pass
     
-    # def ImageInput(self, sample: EasyDict, module: EasyDict) -> Optional[EasyDict]:
-    #     """
-    #     Parse the image input
-    #     """
-    #     return_dict = EasyDict(
-    #         image=None,
-    #     )
-    #     if module.option == 'default':
-    #         return_dict.image = sample.imgpath
-    #     return return_dict
+    def ImageInput(self, sample: EasyDict, module: EasyDict) -> Optional[EasyDict]:
+        """
+        Parse the image input
+        """
+        return_dict = EasyDict(
+            image=None,
+        )
+        image = sample.image
+        inputs = processor(images=image, return_tensors="pt", padding=True)
+        if module.option == 'default':
+            return_dict.image = inputs.pixel_values
+        return return_dict
 
 
     def QuestionInput(self, sample: EasyDict, module: EasyDict) -> EasyDict:
@@ -41,7 +44,7 @@ class ModuleParser():
         Parse the question input
         Simple add the question to the text sequence
         """
-        print(sample)
+        
         return_dict = EasyDict(
             text_sequence="",
         )
@@ -281,6 +284,17 @@ class ModuleParser():
             labels += l
         data_to_process.update({
             'labels': torch.LongTensor(labels),
+        })
+        return data_to_process
+
+    def PostProcessImage(self, data_to_process: EasyDict) -> EasyDict:
+        """
+        Post-processing for images
+        """
+        assert 'image' in data_to_process.keys()
+        image = data_to_process.pop('image')
+        data_to_process.update({
+            'images': image,
         })
         return data_to_process
 

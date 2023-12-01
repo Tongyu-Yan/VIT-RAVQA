@@ -1,28 +1,20 @@
-from data_loader_manager.data_loader_okvqa_with_knowledge import DataLoaderOKVQAWithKnowledge
-from utils.config_system import get_config_from_json, process_config
-import argparse
-from easydict import EasyDict
-import pickle
+from PIL import Image
+import requests
 
-jsonfile = '/home/ty308/rds/hpc-work/myvqa/Tony-VQA/configs/okvqa/DPR.jsonnet'
-config, config_dict = get_config_from_json(jsonfile)
-args = argparse.Namespace(config=jsonfile, reset='your_value', mode='your_value', 
-                           experiment_name='your_value', modules=[], tags=[], 
-                           test_batch_size=-1, test_evaluation_name='', opts=[])
+from transformers import CLIPProcessor, CLIPModel, CLIPVisionModel, CLIPVisionConfig
+config = CLIPVisionConfig()
+model = CLIPVisionModel(config)
+model = model.from_pretrained("openai/clip-vit-base-patch32")
+model.eval()
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
-# Now pass this mock namespace to process_config
-config = process_config(args)
+url = "http://images.cocodataset.org/val2017/000000039769.jpg"
+image = Image.open(requests.get(url, stream=True).raw)
 
+inputs = processor(images=image, return_tensors="pt", padding=True)
+#inputs = inputs.pixel_values
+#print(inputs)
 
-dataloader = DataLoaderOKVQAWithKnowledge(config)
-dataloader.build_dataset()
-print('Finished building dataset')
-
-dataloader.set_dataloader()
-
-dataset_modules = config.data_loader.dataset_modules.module_list
-module_config = config.data_loader.dataset_modules.module_dict.LoadOKVQAData
-#print("Module Config for", dataset_module, ":", module_config)
-img = dataloader.LoadOKVQAData(module_config)
-with open('img.pkl', 'wb') as f:
-    pickle.dump(img, f)
+outputs = model(inputs.pixel_values)
+print(outputs.last_hidden_state[:,0].shape)
+print(outputs.pooler_output.shape)

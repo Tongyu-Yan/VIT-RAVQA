@@ -48,6 +48,7 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         self.mode = dataset_dict['mode']
         self.config = config
         self.data = dataset_dict['data']
+        self.image = self.data.image
         self.vinvl_features = dataset_dict['vinvl_features']
         self.ocr_features = dataset_dict['ocr_features']
         self.answer_candidate_list = dataset_dict['answer_candidate_list']
@@ -64,18 +65,6 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
 
     def __getitem__(self, idx):
         item = self.data.data_items[idx]
-        # image_path = os.path.join(self.image_folder, item.img_key_full + '.jpg')
-        # image = Image.open(image_path).convert('RGB')
-
-        # # Transform the image
-        # transform = transforms.Compose([
-        #     transforms.Resize((224, 224)),
-        #     transforms.ToTensor(),
-        # ])
-        # image = transform(image)
-
-        # sample['image'] = image
-
         # Read predictions from VinVL features
         VinVL_prediction = self.vinvl_features.get(item.img_key_full, None)
         if not VinVL_prediction:
@@ -110,7 +99,7 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
             'question': item.question,
             'img_key_full': item.img_key_full,
             #####################
-            #'image': item.img,
+            'image': self.image,
             #####################
             'gold_answer': item.gold_answer,
             'answers': item.answers,

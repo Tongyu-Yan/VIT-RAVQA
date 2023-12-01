@@ -32,8 +32,8 @@ class RetrieverDPR(pl.LightningModule):
     def __init__(self, config):
         super().__init__()
         self.config = config
-        #! Don't use the final output (1000), use the first token of the output layer
-        self.map = MapVIT(vit_output_dim=1000, ravqa_embedding_dim=768)
+        
+        self.map = MapVIT()
         QueryEncoderModelClass = globals()[self.config.model_config.QueryEncoderModelClass]
 
         QueryEncoderConfigClass = globals()[self.config.model_config.QueryEncoderConfigClass]

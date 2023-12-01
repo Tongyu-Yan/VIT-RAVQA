@@ -56,6 +56,7 @@ local override = {
     },
     "input_modules": {
       "module_list":[
+        {"type": "ImageInput",  "option": "default", }
         {"type": "QuestionInput",  "option": "default", 
                   "separation_tokens": {'start': '<BOQ>', 'end': '<EOQ>'}},
         {"type": "TextBasedVisionInput",  "option": "caption",
@@ -66,6 +67,7 @@ local override = {
       ],
       "postprocess_module_list": [
         {"type": "PostProcessInputTokenization", "option": "default"},
+        {"type": "PostProcessImage", "option":"default"},
       ],
     },
     "decoder_input_modules": {
@@ -111,6 +113,7 @@ local override = {
         "LoadGoogleOCRFeatures",
         "LoadOscarCaptionFeatures",
         "LoadOKVQAData",
+
         "LoadGoogleSearchPassageData",
         "LoadGoogleSearchAnnotations",
       ],
