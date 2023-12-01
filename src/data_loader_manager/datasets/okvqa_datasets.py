@@ -168,9 +168,9 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         ###################################
         #  Tony's image codes
         ###################################
-        images_tensor = torch.stack(images)
+        #?images_tensor = torch.stack(images)
         # Add images to the batched data
-        batched_data['images'] = images_tensor
+        #?batched_data['images'] = images_tensor
 
         #############################
         #  Meta Features

@@ -2,7 +2,8 @@ from ast import Raise
 from typing import Optional
 from easydict import EasyDict
 import torch
-
+# ! change this file
+# 1. input module def imageinput, with a field image
 
 class ModuleParser():
     """
@@ -22,12 +23,25 @@ class ModuleParser():
     """
     def __init__(self) -> None:
         pass
+    
+    # def ImageInput(self, sample: EasyDict, module: EasyDict) -> Optional[EasyDict]:
+    #     """
+    #     Parse the image input
+    #     """
+    #     return_dict = EasyDict(
+    #         image=None,
+    #     )
+    #     if module.option == 'default':
+    #         return_dict.image = sample.imgpath
+    #     return return_dict
+
 
     def QuestionInput(self, sample: EasyDict, module: EasyDict) -> EasyDict:
         """
         Parse the question input
         Simple add the question to the text sequence
         """
+        print(sample)
         return_dict = EasyDict(
             text_sequence="",
         )
@@ -255,7 +269,7 @@ class ModuleParser():
             'output_text_sequences': text_sequences,
         })
         return data_to_process
-    
+    # ! add image processing to the below two functions
     def PostProcessConcatenateLabels(self, data_to_process: EasyDict) -> EasyDict:
         """
         Post-processing for concatenating labels

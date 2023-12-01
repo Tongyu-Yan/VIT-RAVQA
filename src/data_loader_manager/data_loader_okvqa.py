@@ -304,6 +304,7 @@ class DataLoaderOKVQA(DataLoaderWrapper):
                     img_key = imgId
                     img_key_str = str(img_key)
                     img_caption = self.data.caption_features.get(img_key_str, None)
+                    
                     if img_caption is not None: 
                         img_caption = img_caption[0] 
                     else: 

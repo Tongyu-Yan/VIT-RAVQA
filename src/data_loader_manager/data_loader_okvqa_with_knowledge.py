@@ -6,7 +6,7 @@ import json
 import copy
 from tqdm import tqdm
 import csv
-import json
+
 import torch
 import pickle
 import numpy as np
@@ -22,8 +22,6 @@ from pprint import pprint
 from easydict import EasyDict
 from collections import defaultdict
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
-#hihi
-
 import logging
 logger = logging.getLogger(__name__)
 from utils.cache_system import save_cached_data, load_cached_data
@@ -398,9 +396,9 @@ class DataLoaderOKVQAWithKnowledge(DataLoaderOKVQA):
             'ocr_features': self.data.ocr_features,
             'answer_candidate_list': self.data.vqa_data.answer_candidate_list,
             'tokenizer': self.tokenizer,
-            #############
+            ##################
             'image': self.data.vqa_data.image,
-            #############
+            ##################
             'decoder_tokenizer': self.decoder_tokenizer,
             'feature_extractor': self.feature_extractor,
             'mode': 'test',

@@ -127,7 +127,7 @@ class DPRExecutor(BaseExecutor):
             'labels': sample_batched['labels'].to(self.device),
             'item_input_ids': sample_batched['decoder_input_ids'].to(self.device),
             'item_attention_mask': sample_batched['decoder_input_attention_mask'].to(self.device),
-            #'image': sample_batched['image'].to(self.device),
+            #todo'image': sample_batched['image'].to(self.device),
         })
         #print('image shape is:',train_batch.image.shape)
         #print('Train_batch.input_ids shape is:',train_batch.input_ids.shape)

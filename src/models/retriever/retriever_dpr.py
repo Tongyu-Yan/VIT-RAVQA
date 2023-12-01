@@ -32,6 +32,7 @@ class RetrieverDPR(pl.LightningModule):
     def __init__(self, config):
         super().__init__()
         self.config = config
+        #! Don't use the final output (1000), use the first token of the output layer
         self.map = MapVIT(vit_output_dim=1000, ravqa_embedding_dim=768)
         QueryEncoderModelClass = globals()[self.config.model_config.QueryEncoderModelClass]
 
@@ -93,6 +94,7 @@ class RetrieverDPR(pl.LightningModule):
         # Todo    image_embeddings = torch.cat([image_embeddings, image_embedding], dim=0)
         #image_embeddings = image_embeddings.view(8, 768)
         # Todo query_embeddings = torch.cat([query_embeddings, image_embeddings], dim=0)
+        # ! Do sum, rather than concatenation
         
         # item encoder
         item_outputs = self.item_encoder(input_ids=item_input_ids,
@@ -162,7 +164,7 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
-        #in_batch_scores = in_batch_scores.view(8*32)
+        #todo in_batch_scores = in_batch_scores.view(8*32)
         # in_batch_scores size = (8*16)
         # in_batch_labels size = (8)
         
