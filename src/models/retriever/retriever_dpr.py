@@ -8,6 +8,7 @@ from transformers import T5EncoderModel, T5Config
 from transformers import DPRQuestionEncoder, DPRContextEncoder, DPRConfig
 from transformers import BertModel, BertConfig
 from easydict import EasyDict
+from transformers import CLIPProcessor, CLIPVisionModel, CLIPVisionConfig
 import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/mapping_layers')
 from Mp_layer import MapVIT
@@ -33,7 +34,7 @@ class RetrieverDPR(pl.LightningModule):
         super().__init__()
         self.config = config
         
-        self.map = MapVIT()
+        self.map = MapVIT(self.config)
         QueryEncoderModelClass = globals()[self.config.model_config.QueryEncoderModelClass]
 
         QueryEncoderConfigClass = globals()[self.config.model_config.QueryEncoderConfigClass]

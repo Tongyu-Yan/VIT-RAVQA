@@ -36,6 +36,7 @@ class ModuleParser():
         inputs = processor(images=image, return_tensors="pt", padding=True)
         if module.option == 'default':
             return_dict.image = inputs.pixel_values
+            print(return_dict.image.shape)
         return return_dict
 
 
@@ -158,6 +159,7 @@ class ModuleParser():
                 parser_func = getattr(self, input_module.type)
                 parsed_data = parser_func(sample, input_module)
                 data_collection.append(parsed_data)
+                
         elif type == "decoder_input":
             for input_module in modules:
                 parser_func = getattr(self, input_module.type)

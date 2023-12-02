@@ -112,11 +112,12 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
 
 
     def collate_fn(self, batch):
+        # Each element of batch is the sample from previouse function
         '''
         when collate_fn is given to the torch dataloader, we can do further actions to the batch, e.g., tensor can be formed here
         a batch is formed as a list where each element is a defined data returned by __getitem__, andy
         '''
-        print(batch[0].keys())
+        
         # According to the settings in config file, prepare the input and output
         input_modules = self.config.model_config.input_modules.module_list
         decoder_input_modules = self.config.model_config.decoder_input_modules.module_list
@@ -182,12 +183,13 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
         questions = [sample.question for sample in batch]
         answers = [sample.answers for sample in batch]
         gold_answers = [sample.gold_answer for sample in batch]
+        image = [sample.image for sample in batch]
 
         batched_data = EasyDict({
             'question_ids': question_ids,
             'questions': questions,
             ##################
-            #todo'image':
+            'image':image,
             ##################
             'answers': answers,
             'gold_answers': gold_answers,

@@ -61,6 +61,7 @@ local override = {
     },
     "input_modules": {
       "module_list":[
+        {"type": "ImageInput",  "option": "default", },
         {"type": "QuestionInput",  "option": "default", 
                   "separation_tokens": {'start': '<BOQ>', 'end': '<EOQ>'}},
         {"type": "TextBasedVisionInput",  "option": "caption",
@@ -70,6 +71,7 @@ local override = {
                   "separation_tokens": {'start': '<BOV>', 'sep': '<SOV>', 'end': '<EOV>'}},
       ],
       "postprocess_module_list": [
+        {"type": "PostProcessImage", "option":"default"},
         {"type": "PostProcessInputTokenization", "option": "default"},
       ],
     },

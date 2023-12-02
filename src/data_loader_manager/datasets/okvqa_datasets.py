@@ -48,7 +48,6 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         self.mode = dataset_dict['mode']
         self.config = config
         self.data = dataset_dict['data']
-        self.image = self.data.image
         self.vinvl_features = dataset_dict['vinvl_features']
         self.ocr_features = dataset_dict['ocr_features']
         self.answer_candidate_list = dataset_dict['answer_candidate_list']
@@ -99,12 +98,13 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
             'question': item.question,
             'img_key_full': item.img_key_full,
             #####################
-            'image': self.image,
+            'image': item.img,
             #####################
             'gold_answer': item.gold_answer,
             'answers': item.answers,
             'objects': objects,
         })
+        #logger.error(sample.keys())
         return sample
 
     
@@ -115,6 +115,7 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         '''
         # According to the settings in config file, prepare the input and output
         input_modules = self.config.model_config.input_modules.module_list
+        
         decoder_input_modules = self.config.model_config.decoder_input_modules.module_list
         output_modules = self.config.model_config.output_modules.module_list
         
@@ -168,16 +169,17 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         questions = [sample.question for sample in batch]
         answers = [sample.answers for sample in batch]
         gold_answers = [sample.gold_answer for sample in batch]
+        image = [sample.image for sample in batch]
 
         batched_data = EasyDict({
             'question_ids': question_ids,
             'questions': questions,
             'answers': answers,
             'gold_answers': gold_answers,
+            'image': image,
         })
 
         batched_data.update(input_data)
         batched_data.update(decoder_input_data)
         batched_data.update(output_data)
-
         return batched_data
