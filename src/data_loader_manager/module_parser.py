@@ -3,6 +3,7 @@ from typing import Optional
 from easydict import EasyDict
 import torch
 from transformers import CLIPProcessor
+import numpy as np
 # ! change this file
 # 1. input module def imageinput, with a field image
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
@@ -33,10 +34,12 @@ class ModuleParser():
             image=None,
         )
         image = sample.image
-        inputs = processor(images=image, return_tensors="pt", padding=True)
+        print('image shape!!!!!!!!!!!!!!!!', np.array(image).shape)
+        #inputs = processor(images=image, return_tensors="pt", padding=True)
         if module.option == 'default':
-            return_dict.image = inputs.pixel_values
-            print(return_dict.image.shape)
+            #return_dict.image = inputs.pixel_values
+            return_dict.image = image
+#            print(return_dict.image.shape)
         return return_dict
 
 
@@ -295,9 +298,12 @@ class ModuleParser():
         """
         assert 'image' in data_to_process.keys()
         image = data_to_process.pop('image')
+        inputs = processor(images=image, return_tensors="pt", padding=True)
+        image = inputs.pixel_values
         data_to_process.update({
             'images': image,
         })
+        #print('image shape!!!!!!!!!!!!!!!!', image.shape)
         return data_to_process
 
     def post_processing(self, 
