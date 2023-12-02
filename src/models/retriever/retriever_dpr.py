@@ -76,7 +76,7 @@ class RetrieverDPR(pl.LightningModule):
         item_attention_mask=None,
         labels=None,
         #############
-        images=None,
+        image=None,
         #############
         span_labels=None,
         **kwargs
@@ -89,10 +89,10 @@ class RetrieverDPR(pl.LightningModule):
         #   8*768 for query
         if self.query_pooler is not None:
             query_embeddings = self.query_pooler(query_last_hidden_states)
-        # Todoimage_embeddings = torch.empty(0, 768).to(query_embeddings.device)
-        # todo for i in range(batchsize):
-        # Todo    image_embedding = self.map(images=images)
-        # Todo    image_embeddings = torch.cat([image_embeddings, image_embedding], dim=0)
+        
+        
+        image_embedding = self.map(image)
+        print('image_embedding', image_embedding.shape)
         #image_embeddings = image_embeddings.view(8, 768)
         # Todo query_embeddings = torch.cat([query_embeddings, image_embeddings], dim=0)
         # ! Do sum, rather than concatenation

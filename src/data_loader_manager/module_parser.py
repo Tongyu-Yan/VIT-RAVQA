@@ -4,20 +4,6 @@ from easydict import EasyDict
 import torch
 from transformers import CLIPProcessor
 import numpy as np
-from PIL import Image
-import torchvision.transforms as transforms
-# ! change this file
-# 1. input module def imageinput, with a field image
-processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-def Good_image(img):
-    img = Image.fromarray(img)
-    transform = transforms.Compose([
-        transforms.Resize((224, 224)),  # Resize to the input dimension of ViT
-        transforms.ToTensor(),
-        transforms.Normalize(0.5, 0.5)  # Adjust these values as needed
-    ])
-    image = transform(img).unsqueeze(0)
-    return image
 
 class ModuleParser():
     """
@@ -38,22 +24,23 @@ class ModuleParser():
     def __init__(self) -> None:
         pass
     
-    def ImageInput(self, sample: EasyDict, module: EasyDict) -> Optional[EasyDict]:
-        """
-        Parse the image input
-        """
-        return_dict = EasyDict(
-            image=None,
-        )
-        image = sample.image
-        image = Good_image(image)
-        print('image shape!!!!!!!!!!!!!!!!', np.array(image).shape)
-        #inputs = processor(images=image, return_tensors="pt", padding=True)
-        if module.option == 'default':
-            #return_dict.image = inputs.pixel_values
-            return_dict.image = image
-#            print(return_dict.image.shape)
-        return return_dict
+#     def ImageInput(self, sample: EasyDict, module: EasyDict) -> Optional[EasyDict]:
+#         """
+#         Parse the image input
+#         """
+#         return_dict = EasyDict(
+#             image=None,
+#         )
+#         image = sample.image
+#         #image = Good_image(image)
+#         #print('image shape!!!!!!!!!!!!!!!!', np.array(image).shape)
+#         inputs = processor(images=image, return_tensors="pt", padding=True)
+#         #print('image shape!!!!!!!!!!!!!!!!', np.array(inputs.pixel_values).shape)
+#         if module.option == 'default':
+#             return_dict.image = inputs.pixel_values
+#             #return_dict.image = image
+# #            print(return_dict.image.shape)
+#         return return_dict
 
 
     def QuestionInput(self, sample: EasyDict, module: EasyDict) -> EasyDict:
@@ -186,6 +173,11 @@ class ModuleParser():
                 parser_func = getattr(self, output_module.type)
                 parsed_data = parser_func(sample, output_module)
                 data_collection.append(parsed_data)
+        # elif type == "ImageInput":
+        #     for input_module in modules:
+        #         parser_func = getattr(self, input_module.type)
+        #         parsed_data = parser_func(sample, input_module)
+        #         data_collection.append(parsed_data)
         else:
             raise ValueError("Unknown type: {}".format(type))
         
@@ -216,6 +208,9 @@ class ModuleParser():
                     if type(value) == str:
                         # automatically concatenate strings with the same key
                         processed_data[key] += ' ' + value
+                    # elif type(value) == torch.Tensor:
+                    #     # automatically concatenate lists with the same key
+                    #     processed_data[key] = torch.cat([processed_data[key], value], dim=0)
                     else:
                         raise TypeError("Undefined processing type: {}".format(type(value)))
         
@@ -305,19 +300,19 @@ class ModuleParser():
         })
         return data_to_process
 
-    def PostProcessImage(self, data_to_process: EasyDict) -> EasyDict:
-        """
-        Post-processing for images
-        """
-        assert 'image' in data_to_process.keys()
-        image = data_to_process.pop('image')
-        inputs = processor(images=image, return_tensors="pt", padding=True)
-        image = inputs.pixel_values
-        data_to_process.update({
-            'images': image,
-        })
-        #print('image shape!!!!!!!!!!!!!!!!', image.shape)
-        return data_to_process
+    # def PostProcessImage(self, data_to_process: EasyDict) -> EasyDict:
+    #     """
+    #     Post-processing for images
+    #     """
+    #     assert 'image' in data_to_process.keys()
+    #     image = data_to_process.pop('image')
+    #     #inputs = processor(images=image, return_tensors="pt", padding=True)
+    #     #image = inputs.pixel_values
+    #     data_to_process.update({
+    #         'images': image,
+    #     })
+    #     #print('image shape!!!!!!!!!!!!!!!!', image.shape)
+    #     return data_to_process
 
     def post_processing(self, 
                         processed_batch_data: EasyDict,

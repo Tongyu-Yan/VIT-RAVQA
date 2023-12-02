@@ -36,8 +36,8 @@ import timm
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from data_loader_manager.module_parser import ModuleParser
-from PIL import Image
-import torchvision.transforms as transforms
+from transformers import CLIPProcessor
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
 class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
     """
@@ -145,6 +145,7 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         decoder_input_data = EasyDict(decoder_input_data)
         output_data = EasyDict(output_data)
 
+
         #############################
         #  Postprocessing Features
         #############################
@@ -169,7 +170,11 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
         questions = [sample.question for sample in batch]
         answers = [sample.answers for sample in batch]
         gold_answers = [sample.gold_answer for sample in batch]
-        image = [sample.image for sample in batch]
+        image = torch.empty(0, 3, 224, 224)
+        for sample in batch:
+            imagedata = sample.image
+            images = processor(images=imagedata, return_tensors="pt", padding=True)
+            image = torch.cat([image, images.pixel_values], dim=0)
 
         batched_data = EasyDict({
             'question_ids': question_ids,
@@ -178,7 +183,7 @@ class OKVQADataset(torch.utils.data.Dataset, ModuleParser):
             'gold_answers': gold_answers,
             'image': image,
         })
-
+        
         batched_data.update(input_data)
         batched_data.update(decoder_input_data)
         batched_data.update(output_data)

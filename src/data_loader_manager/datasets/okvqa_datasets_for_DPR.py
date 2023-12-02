@@ -37,7 +37,8 @@ from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
 from data_loader_manager.module_parser import ModuleParser
 from data_loader_manager.datasets.okvqa_datasets import OKVQADataset
-
+from transformers import CLIPProcessor
+processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
 
 #
 class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
@@ -168,6 +169,9 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
         #############################
         #  Postprocessing Features
         #############################
+        
+        
+
         input_post_modules = self.config.model_config.input_modules.postprocess_module_list
         decoder_input_post_modules = self.config.model_config.decoder_input_modules.postprocess_module_list
         output_post_modules = self.config.model_config.output_modules.postprocess_module_list
@@ -183,7 +187,12 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
         questions = [sample.question for sample in batch]
         answers = [sample.answers for sample in batch]
         gold_answers = [sample.gold_answer for sample in batch]
-        image = [sample.image for sample in batch]
+        image = torch.empty(0, 3, 224, 224)
+        for sample in batch:
+            imagedata = sample.image
+            images = processor(images=imagedata, return_tensors="pt", padding=True)
+            image = torch.cat([image, images.pixel_values], dim=0)
+
 
         batched_data = EasyDict({
             'question_ids': question_ids,
@@ -194,11 +203,13 @@ class OKVQADatasetForDPR(OKVQADataset, ModuleParser):
             'answers': answers,
             'gold_answers': gold_answers,
         })
+        
+        
         batched_data.update(input_data)
         batched_data.update(decoder_input_data)
         batched_data.update(output_data)
 
         return batched_data
 
-
+        #!batched_data.input_data.image
         

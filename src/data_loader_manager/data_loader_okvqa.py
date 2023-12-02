@@ -323,8 +323,8 @@ class DataLoaderOKVQA(DataLoaderWrapper):
                     img_key_full = str(img_key).zfill(12)
                     #!!!!!!!!!!!!!
                     img = cv2.imread(img_path)
-                    img = Good_image(img)
-                    print(img.shape)
+                    #img = Good_image(img)
+                    
                    
                     related_question_ids = vqa_helper.getQuesIds(imgIds=[imgId])
                     related_answers = vqa_helper.loadQA(ids=related_question_ids)

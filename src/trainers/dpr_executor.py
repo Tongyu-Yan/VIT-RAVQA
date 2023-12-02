@@ -120,16 +120,16 @@ class DPRExecutor(BaseExecutor):
 
 
     def training_step(self, sample_batched, batch_idx):
-        img = sample_batched['image']
-        #_ = sample_batched['image']
-        print('input id is:',sample_batched['input_ids'].shape)
-        print('image shape is:',img[0].shape)
+        print("image in executer!!!!!!!!!!!!!!!!!!!!!!!!:",sample_batched['image'].shape)
+        #print(torch.tensor(image).shape)
+        #imgs = torch.cat((imgs,torch.tensor(image)),0)
         train_batch = EasyDict({
             'input_ids': sample_batched['input_ids'].to(self.device),
             'attention_mask': sample_batched['attention_mask'].to(self.device),
             'labels': sample_batched['labels'].to(self.device),
             'item_input_ids': sample_batched['decoder_input_ids'].to(self.device),
             'item_attention_mask': sample_batched['decoder_input_attention_mask'].to(self.device),
+            #'image': torch.tensor(sample_batched['image']).to(self.device),
             'image': sample_batched['image'].to(self.device),
         })
         #print('image shape is:',train_batch.image.shape)
