@@ -4,9 +4,21 @@ from easydict import EasyDict
 import torch
 from transformers import CLIPProcessor
 import numpy as np
+from PIL import Image
+import torchvision.transforms as transforms
 # ! change this file
 # 1. input module def imageinput, with a field image
 processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+def Good_image(img):
+    img = Image.fromarray(img)
+    transform = transforms.Compose([
+        transforms.Resize((224, 224)),  # Resize to the input dimension of ViT
+        transforms.ToTensor(),
+        transforms.Normalize(0.5, 0.5)  # Adjust these values as needed
+    ])
+    image = transform(img).unsqueeze(0)
+    return image
+
 class ModuleParser():
     """
     This is a module inherited by the dataset class
@@ -34,6 +46,7 @@ class ModuleParser():
             image=None,
         )
         image = sample.image
+        image = Good_image(image)
         print('image shape!!!!!!!!!!!!!!!!', np.array(image).shape)
         #inputs = processor(images=image, return_tensors="pt", padding=True)
         if module.option == 'default':

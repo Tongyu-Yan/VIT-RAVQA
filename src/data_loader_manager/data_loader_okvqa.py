@@ -261,14 +261,24 @@ class DataLoaderOKVQA(DataLoaderWrapper):
         # Loadimg function
         ######################
         # Add this to your existing data loading method
-        def LoadImg(image_path):
+        # def LoadImg(image_path):
+        #     transform = transforms.Compose([
+        #         transforms.Resize((224, 224)),  # Resize to the input dimension of ViT
+        #         transforms.ToTensor(),
+        #         transforms.Normalize(0.5, 0.5)  # Adjust these values as needed
+        #     ])
+        #     image = Image.open(image_path)
+        #     image = transform(image).unsqueeze(0)  # Add batch dimension
+        #     return image
+
+        def Good_image(img):
+            img = Image.fromarray(img)
             transform = transforms.Compose([
                 transforms.Resize((224, 224)),  # Resize to the input dimension of ViT
                 transforms.ToTensor(),
                 transforms.Normalize(0.5, 0.5)  # Adjust these values as needed
             ])
-            image = Image.open(image_path)
-            image = transform(image).unsqueeze(0)  # Add batch dimension
+            image = transform(img).unsqueeze(0)
             return image
 
 
@@ -290,7 +300,7 @@ class DataLoaderOKVQA(DataLoaderWrapper):
                     imgFilename = 'COCO_' + dataSubType + '_'+ str(imgId).zfill(12) + '.jpg'
                     img_path = os.path.join(img_data_path, imgFilename)
                     img_list.append((imgId, img_path))
-                    self.data.okvqa_data.image[str(imgId)] = LoadImg(img_path)
+                    #self.data.okvqa_data.image[str(imgId)] = LoadImg(img_path)
                     if self.config.data_loader.dummy_dataloader:
                         # Load only a few samples for testing
                         if len(img_list) > 20:
@@ -311,34 +321,11 @@ class DataLoaderOKVQA(DataLoaderWrapper):
                         logger.debug('No caption found for {}!'.format(img_key))
                     
                     img_key_full = str(img_key).zfill(12)
+                    #!!!!!!!!!!!!!
                     img = cv2.imread(img_path)
-                    # img_encoded_str = base64.b64encode(cv2.imencode('.jpg', img)[1])
-                    
-                    # Read predictions from VinVL features
-                    # print(self.data.vinvl_features.keys()[:10])
-                    # print(self.data.vinvl_features[img_key_full])
-                    # VinVL_prediction = self.data.vinvl_features.get(img_key_full, None)
-                    # if not VinVL_prediction:
-                    #     logger.print('img', img_key_full, 'no match found!', mode='error')
-                    
-                    # DEBUG
-                    # prediction = self.data.vinvl_features.get(img_key_full, None)
-                    # b_imgs = []
-                    # for obj in prediction['objects']:
-                    #     print(obj['rect']) # min x min y max x max y
-                    #     minx, miny, maxx, maxy = [int(x) for x in obj['rect']]
-                    #     # img: H x W x C
-                    #     # print(img[miny:maxy, minx:maxx])
-
-                    #     #  H x W x C --> C x H x W
-                    #     # b_imgs.append(torch.Tensor(img[miny:maxy, minx:maxx]).permute(2,0,1))
-                    #     print(obj['class'])
-
-                    #     # with open(os.path.join(self.config.imgs_path, img_key_full+'.jpg'), 'w') as img_fp:
-                    #     cv2.imwrite(os.path.join(self.config.imgs_path, img_key_full+'.jpg'), img[miny:maxy, minx:maxx])
-                    #     input()
-                    # input()
-
+                    img = Good_image(img)
+                    print(img.shape)
+                   
                     related_question_ids = vqa_helper.getQuesIds(imgIds=[imgId])
                     related_answers = vqa_helper.loadQA(ids=related_question_ids)
                     related_question_and_answers = vqa_helper.returnQA(related_answers)
