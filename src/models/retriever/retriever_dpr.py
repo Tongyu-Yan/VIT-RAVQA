@@ -92,9 +92,9 @@ class RetrieverDPR(pl.LightningModule):
         
         
         image_embedding = self.map(image)
-        print('image_embedding', image_embedding.shape)
+        #print('image_embedding', image_embedding.shape)
         #image_embeddings = image_embeddings.view(8, 768)
-        # Todo query_embeddings = torch.cat([query_embeddings, image_embeddings], dim=0)
+        
         # ! Do sum, rather than concatenation
         
         # item encoder
@@ -109,7 +109,8 @@ class RetrieverDPR(pl.LightningModule):
         
         query_embeddings = query_embeddings.contiguous()
         item_embeddings = item_embeddings.contiguous()
-        
+        image_embedding = image_embedding.contiguous()
+
         ################## in-batch negative sampling ###############
         if 'negative_samples_across_gpus' in self.config.model_config.modules:
             # print("get rank", get_rank())
@@ -165,7 +166,11 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
-        #todo in_batch_scores = in_batch_scores.view(8*32)
+        in_batch_scores2 = torch.matmul(image_embedding, item_embeddings.T)
+        #print('in_batch_scores', in_batch_scores.shape)
+        #print('in_batch_scores2', in_batch_scores2.shape)
+        in_batch_scores = in_batch_scores + in_batch_scores2
+        
         # in_batch_scores size = (8*16)
         # in_batch_labels size = (8)
         

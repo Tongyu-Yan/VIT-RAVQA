@@ -32,5 +32,6 @@ inputs = processor(images=image, return_tensors="pt", padding=True)
 print(inputs.pixel_values.shape)
 
 outputs = model(inputs.pixel_values)
-print(outputs.last_hidden_state[:,0].shape)
-print(outputs.pooler_output.shape)
+print(outputs.shape)
+#print(outputs.last_hidden_state[:,0].shape)
+#print(outputs.pooler_output.shape)

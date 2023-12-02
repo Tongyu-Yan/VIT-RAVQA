@@ -27,6 +27,8 @@ class MapVIT(pl.LightningModule):
 
     def forward(self, x):
         x = self.vit(x)
+        x = x.last_hidden_state[:,0]
+        #x = x.pooler_output
         return self.map(x)
 
 # Rest of your code...
