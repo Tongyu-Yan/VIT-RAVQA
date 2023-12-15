@@ -193,15 +193,19 @@ class DPRExecutor(BaseExecutor):
         test_batch = EasyDict({
             'input_ids': sample_batched['input_ids'].to(self.device),
             'attention_mask': sample_batched['attention_mask'].to(self.device),
+            # ? Made changes here----Tony
+            'image': sample_batched['image'].to(self.device),
         })
         # batch_size x hidden_states
         query_emb = self.model.generate_query_embeddings(**test_batch)
+        image_emb = self.model.generate_image_embeddings(**test_batch)
         
         data_to_return = {
             'btach_idx': batch_idx,
             'query_emb': query_emb,
             'question_ids': sample_batched['question_ids'],
             'answers': sample_batched['answers'],
+            'image_emb': image_emb,
         }
 
         return data_to_return
@@ -214,12 +218,15 @@ class DPRExecutor(BaseExecutor):
         # n_queries x hidden_size
         
         query_embeddings = []
+        image_embeddings = []
         question_ids = []
         for step_output in step_outputs:
             query_embeddings.append(step_output['query_emb'])
+            image_embeddings.append(step_output['image_emb'])
             question_ids += step_output['question_ids']
         
         query_embeddings = torch.cat(query_embeddings, dim=0)
+        image_embeddings = torch.cat(image_embeddings, dim=0)
 
         ##################################
         ##    Generate embeds for items ##

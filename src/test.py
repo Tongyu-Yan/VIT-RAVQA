@@ -18,6 +18,7 @@ config_dict = json.loads(parsed_json)
 # Print the configuration
 
 config = EasyDict(config_dict)
+print(config.saved_model_path)
 model = MapVIT(config)
 #model = model.from_pretrained("openai/clip-vit-base-patch32")
 model.eval()

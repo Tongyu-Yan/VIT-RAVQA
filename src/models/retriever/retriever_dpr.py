@@ -85,13 +85,13 @@ class RetrieverDPR(pl.LightningModule):
         query_outputs = self.query_encoder(input_ids=input_ids,
                                             attention_mask=attention_mask)
         query_embeddings = query_outputs.pooler_output
-        batchsize = query_embeddings.shape[0]
+        
         #   8*768 for query
         if self.query_pooler is not None:
             query_embeddings = self.query_pooler(query_last_hidden_states)
         
         
-        image_embedding = self.map(image)
+        image_embeddings = self.map(image)
         #print('image_embedding', image_embedding.shape)
         #image_embeddings = image_embeddings.view(8, 768)
         
@@ -109,7 +109,7 @@ class RetrieverDPR(pl.LightningModule):
         
         query_embeddings = query_embeddings.contiguous()
         item_embeddings = item_embeddings.contiguous()
-        image_embedding = image_embedding.contiguous()
+        image_embeddings = image_embeddings.contiguous()
 
         ################## in-batch negative sampling ###############
         if 'negative_samples_across_gpus' in self.config.model_config.modules:
@@ -119,12 +119,16 @@ class RetrieverDPR(pl.LightningModule):
             n_nodes = get_world_size()
             
             # Create placeholder to hold embeddings passed from other ranks
+            global_image_embeddings_placeholder = [torch.zeros(*image_embeddings.shape).to(image_embeddings.device) for _ in range(n_nodes)]
             global_query_embeddings_placeholder = [torch.zeros(*query_embeddings.shape).to(query_embeddings.device) for _ in range(n_nodes)]
             global_item_embeddings_placeholder = [torch.zeros(*item_embeddings.shape).to(item_embeddings.device) for _ in range(n_nodes)]
+            dist.all_gather(global_image_embeddings_placeholder, image_embeddings.detach())
             dist.all_gather(global_query_embeddings_placeholder, query_embeddings.detach())
             dist.all_gather(global_item_embeddings_placeholder, item_embeddings.detach())
 
+            
             global_query_embeddings = []
+            global_image_embeddings = []
             global_item_embeddings = []
             # print(f"rank {get_rank()} global_query_embeddings", global_query_embeddings)
             # print(f"rank {get_rank()} global_item_embeddings", global_item_embeddings)
@@ -136,6 +140,13 @@ class RetrieverDPR(pl.LightningModule):
                     global_query_embeddings.append(remote_q_embeddings)
                 else:
                     global_query_embeddings.append(query_embeddings)
+            
+            for rank_index, remote_img_embeddings in enumerate(global_image_embeddings_placeholder):
+                # We append the embeddings from other GPUs if this embedding does not require gradients
+                if rank_index != current_rank:
+                    global_image_embeddings.append(remote_img_embeddings)
+                else:
+                    global_image_embeddings.append(image_embeddings)
 
             for rank_index, remote_item_embeddings in enumerate(global_item_embeddings_placeholder):
                 # We append the embeddings from other GPUs if this embedding does not require gradients
@@ -147,9 +158,10 @@ class RetrieverDPR(pl.LightningModule):
             # Replace the previous variables with gathered tensors
             query_embeddings = torch.cat(global_query_embeddings)
             item_embeddings = torch.cat(global_item_embeddings)
+            image_embeddings = torch.cat(global_image_embeddings)
             
 
-        batch_size = batchsize
+        batch_size = query_embeddings.shape[0]
         batch_size_with_pos_and_neg = item_embeddings.shape[0]
         num_pos_and_neg = batch_size_with_pos_and_neg // batch_size
         num_pos = 1
@@ -166,7 +178,7 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
 
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
-        in_batch_scores2 = torch.matmul(image_embedding, item_embeddings.T)
+        in_batch_scores2 = torch.matmul(image_embeddings, item_embeddings.T)
         #print('in_batch_scores', in_batch_scores.shape)
         #print('in_batch_scores2', in_batch_scores2.shape)
         in_batch_scores = in_batch_scores + in_batch_scores2
@@ -179,6 +191,10 @@ class RetrieverDPR(pl.LightningModule):
         return EasyDict({
             'loss': loss,
         })
+    
+    def generate_image_embeddings(self, image=None):
+        image_embeddings = self.map(image)
+        return image_embeddings
 
     def generate_query_embeddings(
         self,
