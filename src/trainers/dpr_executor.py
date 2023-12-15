@@ -193,12 +193,13 @@ class DPRExecutor(BaseExecutor):
         test_batch = EasyDict({
             'input_ids': sample_batched['input_ids'].to(self.device),
             'attention_mask': sample_batched['attention_mask'].to(self.device),
-            # ? Made changes here----Tony
+        })
+        test_batch2 = EasyDict({
             'image': sample_batched['image'].to(self.device),
         })
         # batch_size x hidden_states
         query_emb = self.model.generate_query_embeddings(**test_batch)
-        image_emb = self.model.generate_image_embeddings(**test_batch)
+        image_emb = self.model.generate_image_embeddings(**test_batch2)
         
         data_to_return = {
             'btach_idx': batch_idx,
@@ -302,7 +303,9 @@ class DPRExecutor(BaseExecutor):
                 item_embeddings.append(x.cpu().detach().numpy())
             
             # n_queries x batch_size
-            i_rate_batch = torch.matmul(query_embeddings, item_emb.t()).detach().cpu()
+            i_rate_batch1 = torch.matmul(query_embeddings, item_emb.t()).detach().cpu()
+            i_rate_batch2 = torch.matmul(image_embeddings, item_emb.t()).detach().cpu()
+            i_rate_batch = (i_rate_batch1 + i_rate_batch2)/2
 
             rate_batch[:, i_start:i_end] = i_rate_batch
             i_count += i_rate_batch.shape[1]
@@ -367,6 +370,8 @@ class DPRExecutor(BaseExecutor):
         Ks = self.config.model_config.Ks
         item_embeddings = np.stack(item_embeddings, 0)
         index.add(item_embeddings)
+        # ? IDK if im right
+        index.add(image_embeddings.cpu().numpy())
         search_res = index.search(query_embeddings.cpu().numpy(), k=max(Ks))
 
         batch_result = []
