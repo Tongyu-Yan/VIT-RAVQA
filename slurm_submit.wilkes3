@@ -22,7 +22,7 @@
 #! Note that the job submission script will enforce no more than 32 cpus per GPU.
 #SBATCH --gres=gpu:1
 #! How much wallclock time will be required?
-#SBATCH --time=6:00:00
+#SBATCH --time=12:00:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=NONE
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -70,11 +70,11 @@ application="python src/main.py configs/okvqa/DPR_v.jsonnet"
 
 #! Run options for the application:
 options="--mode train \
-    --experiment_name test1  \
+    --experiment_name new_method_test1  \
     --accelerator auto --devices auto  \
     --strategy ddp \
     --modules exhaustive_search_in_testing \
-    --opts train.epochs=2 \
+    --opts train.epochs=6 \
             train.batch_size=8 \
             valid.step_size=1 \
             valid.batch_size=32 \

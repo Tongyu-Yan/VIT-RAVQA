@@ -6,7 +6,7 @@ import os
 import torch
 from PIL import Image
 import requests
-
+import json
 from transformers import CLIPProcessor, CLIPVisionModel, CLIPVisionConfig
 
 
@@ -31,4 +31,50 @@ class MapVIT(pl.LightningModule):
         #x = x.pooler_output
         return self.map(x)
 
-# Rest of your code...
+    def save_pretrained(self, save_directory):
+        """
+        Save MapVIT model parameters to the specified directory.
+
+        Args:
+        save_directory (str): Directory to save the model parameters.
+        """
+        os.makedirs(save_directory, exist_ok=True)
+        model_path = os.path.join(save_directory, 'pytorch_model.bin')
+        torch.save(self.state_dict(), model_path)
+
+        # Optionally, save the configuration if needed
+        config_path = os.path.join(save_directory, 'config.json')
+        with open(config_path, 'w') as f:
+            json.dump(self.config, f)
+    def from_pretrained(cls, save_directory):
+        """
+        Load a pretrained MapVIT model from the specified directory.
+
+        Args:
+        save_directory (str): Directory where the model parameters are saved.
+        """
+        config_path = os.path.join(save_directory, 'config.json')
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+
+        model = cls(config)
+        
+        model_path = os.path.join(save_directory, 'pytorch_model.bin')
+        state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+        model.load_state_dict(state_dict)
+
+        return model
+"""
+To save the model:
+model = MapVIT(config)
+# ... training and other operations ...
+
+save_directory = '/path/to/save/directory'
+model.save_pretrained(save_directory)
+
+To load the model:
+save_directory = '/path/to/saved/model'
+model = MapVIT.from_pretrained(save_directory)
+
+
+"""

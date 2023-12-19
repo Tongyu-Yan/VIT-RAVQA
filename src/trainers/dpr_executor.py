@@ -228,6 +228,8 @@ class DPRExecutor(BaseExecutor):
         
         query_embeddings = torch.cat(query_embeddings, dim=0)
         image_embeddings = torch.cat(image_embeddings, dim=0)
+        #! belows is for sum of query. 
+        query_embeddings = (query_embeddings + image_embeddings)/2
 
         ##################################
         ##    Generate embeds for items ##
@@ -370,8 +372,7 @@ class DPRExecutor(BaseExecutor):
         Ks = self.config.model_config.Ks
         item_embeddings = np.stack(item_embeddings, 0)
         index.add(item_embeddings)
-        # ? IDK if im right
-        index.add(image_embeddings.cpu().numpy())
+
         search_res = index.search(query_embeddings.cpu().numpy(), k=max(Ks))
 
         batch_result = []
@@ -529,6 +530,9 @@ class DPRExecutor(BaseExecutor):
         self.data_loader.tokenizer.save_pretrained(os.path.join(path_save_model, 'query_encoder_tokenizer'))
         self.model.item_encoder.save_pretrained(os.path.join(path_save_model, 'item_encoder'))
         self.data_loader.decoder_tokenizer.save_pretrained(os.path.join(path_save_model, 'item_encoder_tokenizer'))
+        #!#############################
+        self.model.map.save_pretrained(os.path.join(path_save_model, 'map'))
+        #self.model.save_pretrained(path_save_model, 'model')
         logger.info('Model has been saved to {}'.format(path_save_model))
 
     

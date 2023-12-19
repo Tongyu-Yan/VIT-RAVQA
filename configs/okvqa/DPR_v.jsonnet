@@ -133,6 +133,7 @@ local override = {
     "batch_size":train_batch_size,
     "lr": lr,
     "adam_epsilon": adam_epsilon,
+    //"load_epoch": -1,
     "load_epoch": -1,
     "load_model_path": "",
     "load_best_model": 0,

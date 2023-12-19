@@ -32,6 +32,7 @@ from .base_executor import BaseExecutor
 from models.rag.rag_model import RagModel
 from utils.dirs import *
 
+
 class RagExecutor(BaseExecutor):
     def __init__(self, config, data_loader):
         super().__init__(config, data_loader)
@@ -48,7 +49,7 @@ class RagExecutor(BaseExecutor):
         self.model.init_retrieval()
         
 
-    
+    #
     def configure_optimizers(self):
         """
         Return optimizers and schedulers
@@ -135,7 +136,7 @@ class RagExecutor(BaseExecutor):
             }
         }
 
-
+#
     def training_step(self, sample_batched, batch_idx):
         train_batch = EasyDict({
             'input_ids': sample_batched['input_ids'].to(self.device),
@@ -145,6 +146,7 @@ class RagExecutor(BaseExecutor):
             'question_ids': sample_batched['question_ids'],
             'answers': sample_batched['answers'],
             'training': True,
+            'image': sample_batched['image'],
         })
 
         forward_results = self.model(**train_batch)

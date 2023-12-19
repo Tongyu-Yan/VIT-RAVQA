@@ -24,7 +24,7 @@ def get_world_size():
 def get_default_group():
     return dist.group.WORLD
 
-
+#
 class RetrieverDPR(pl.LightningModule):
     """
     Class of retriever model
@@ -176,12 +176,12 @@ class RetrieverDPR(pl.LightningModule):
         # print('in_batch_labels', in_batch_labels)
         in_batch_labels = torch.argmax(in_batch_labels, dim=1)
         # print('in_batch_labels', in_batch_labels)
-
+        query_embeddings = 0.5 * (query_embeddings + image_embeddings)
         in_batch_scores = torch.matmul(query_embeddings, item_embeddings.T)
-        in_batch_scores2 = torch.matmul(image_embeddings, item_embeddings.T)
+        #! in_batch_scores2 = torch.matmul(image_embeddings, item_embeddings.T)
         #print('in_batch_scores', in_batch_scores.shape)
         #print('in_batch_scores2', in_batch_scores2.shape)
-        in_batch_scores = (in_batch_scores + in_batch_scores2)/2
+        #! in_batch_scores = (in_batch_scores + in_batch_scores2)/2
         
         # in_batch_scores size = (8*16)
         # in_batch_labels size = (8)
