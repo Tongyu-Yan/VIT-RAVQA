@@ -4,7 +4,7 @@ Welcome to the project repository for "Incorporating Vision Encoders into Retrie
 
 ## Overview
 
-This project aims to explore and enhance the capabilities of visual question answering through the incorporation of advanced vision encoders in the context of retrieval-augmented frameworks. Our focus lies in pushing the boundaries of how visual information can be effectively integrated with textual question answering systems.
+This project (ongoing) aims to explore and enhance the capabilities of visual question answering through the incorporation of advanced vision encoders in the context of retrieval-augmented frameworks. Our focus lies in pushing the boundaries of how visual information can be effectively integrated with textual question answering systems.
 
 ## Original RAVQA Project
 
@@ -12,7 +12,7 @@ The original RAVQA (Retrieval-Augmented Visual Question Answering) project serve
 
 ## Project Structure
 
-(Here, you can include a brief description of the project's directory structure, major components, and how they interact.)
+Place holder.
 
 ## Getting Started
 
