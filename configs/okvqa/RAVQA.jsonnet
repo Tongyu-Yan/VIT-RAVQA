@@ -2,8 +2,8 @@ local base_env = import 'RAVQA_base.jsonnet';
 
 // data configuration
 local RAG_data_config_full = {
-  "index_passages_path": "../data/ok-vqa/pre-extracted_features/faiss/ok-vqa-passages-full-caption-pretrained-NewRun/my_knowledge_dataset",
-  "index_path": "../data/ok-vqa/pre-extracted_features/faiss/ok-vqa-passages-full-caption-pretrained-NewRun/my_knowledge_dataset_hnsw_index.faiss",
+  "index_passages_path": "/home/ty308/rds/hpc-work/data/ok-vqa/pre-extracted_features/faiss/ok-vqa-passages-full-new-framework/my_knowledge_dataset",
+  "index_path": "/home/ty308/rds/hpc-work/data/ok-vqa/pre-extracted_features/faiss/ok-vqa-passages-full-new-framework/my_knowledge_dataset_hnsw_index.faiss",
 };
 
 local override = {

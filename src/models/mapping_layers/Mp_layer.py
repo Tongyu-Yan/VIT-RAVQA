@@ -23,13 +23,14 @@ class MapVIT(pl.LightningModule):
         self.vit = self.vit.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         #self.vit = vit_class.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         self.vit.eval()
-        self.map = nn.Linear(768, 768)
+        self.map = nn.ReLU(nn.Linear(768, 768))
 
     def forward(self, x):
         x = self.vit(x)
         x = x.last_hidden_state[:,0]
         #x = x.pooler_output
-        return self.map(x)
+        x = self.map(x)
+        return x
 
     def save_pretrained(self, save_directory):
         """

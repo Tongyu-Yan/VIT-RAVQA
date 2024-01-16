@@ -13,6 +13,7 @@ import sys
 sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/mapping_layers')
 from Mp_layer import MapVIT
 
+
 def get_rank():
     return dist.get_rank()
 
@@ -24,7 +25,7 @@ def get_world_size():
 def get_default_group():
     return dist.group.WORLD
 
-#
+
 class RetrieverDPR(pl.LightningModule):
     """
     Class of retriever model

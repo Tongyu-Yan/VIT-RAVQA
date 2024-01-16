@@ -19,7 +19,7 @@ local warmup_steps = 0;
 local seed=2021;
 
 // data path configuration
-local wandb_cache_dir = ''; //'/home/ty308/rds/hpc-work/data/wandb_cache';
+local wandb_cache_dir = '/home/ty308/rds/hpc-work/data/wandb_cache';
 local default_cache_folder = '/home/ty308/rds/hpc-work/data/ok-vqa/cache';
 local vqa_data = {
   "question_files":{
@@ -54,8 +54,8 @@ local passage_data = {
   "full": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/okvqa_full_corpus.csv",
 };
 local pretrained_dpr_features = {
-  "train": "home/ty308/rds/hpc-work/myvqa/Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/test/test_evaluation/train_predictions.json",
-  "test": "home/ty308/rds/hpc-work/myvqa/Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/test/test_evaluation/test_predictions.json",
+  "train": "/home/ty308/rds/hpc-work/myvqa/Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/test/test_evaluation/train_predictions.json",
+  "test": "/home/ty308/rds/hpc-work/myvqa/Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/test/test_evaluation/test_predictions.json",
 };
 local dpr_training_annotations = {
   "train": "/home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/retriever_train.json",

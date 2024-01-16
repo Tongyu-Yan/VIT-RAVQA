@@ -46,8 +46,8 @@ class RagModel(pl.LightningModule):
                                                     config=question_encoder_model_config)
         self.retiever_hidden_size = question_encoder_model_config.hidden_size
         #! Made changes here
-        self.map = MapVIT(self.config)
-        self.image_encoder = image_encoder(self.config)
+        self.map = MapVIT(self.config)#!
+        self.image_encoder = image_encoder(self.config)#!
 
         # Initialising generator
         GeneratorModelClass = globals()[self.config.model_config.GeneratorModelClass]
@@ -132,6 +132,8 @@ class RagModel(pl.LightningModule):
                                             attention_mask=attention_mask)
         image_outputs = self.map(image)
         question_hidden_states = query_outputs.pooler_output
+        # combine the two vectors
+        question_hidden_states = (question_hidden_states + image_outputs)/2
         # print('question_hidden_states', question_hidden_states.shape)
 
         
@@ -149,9 +151,8 @@ class RagModel(pl.LightningModule):
 
         # print('item_hidden_states', item_hidden_states.shape)
 
-        doc_scores1 = (question_hidden_states.unsqueeze(dim=1) * item_hidden_states).sum(dim=-1)/2
-        doc_scores2 = (image_outputs.unsqueeze(dim=1) * item_hidden_states).sum(dim=-1)/2
-        doc_scores = doc_scores1 + doc_scores2
+        doc_scores = (question_hidden_states.unsqueeze(dim=1) * item_hidden_states).sum(dim=-1)/2
+        
         
         
         if 'add_null_document' in self.config.model_config.modules:
@@ -278,19 +279,29 @@ class RagModel(pl.LightningModule):
                                     max_length=self.config.data_loader.additional.max_decoder_source_length,
                                     truncation=True,
                                     return_tensors="pt")
-        generator_input_ids, generator_attention_mask = encoding.input_ids, encoding.attention_mask
-        generator_input_ids = generator_input_ids.to(labels.device)
+        generator_input_ids, generator_attention_mask = encoding.input_ids.to(self.device), encoding.attention_mask.to(self.device)
+
+        text_embeddings = self.generator.shared(generator_input_ids).to(self.device)
+        repeated_image_embed = image_embed.repeat_interleave(n_docs, dim=0).to(self.device)
+        combined_embeddings = torch.cat([repeated_image_embed.unsqueeze(1), text_embeddings], dim=1)
+        ones_column = torch.ones((generator_attention_mask.shape[0], 1), dtype=torch.long, device=generator_attention_mask.device).to(self.device)
+        new_generator_attention_mask = torch.cat([ones_column, generator_attention_mask], dim=1)
+        generator_attention_mask = new_generator_attention_mask
+
         generator_attention_mask = generator_attention_mask.to(labels.device)
         generator_decoder_input_ids = self.generator._shift_right(targets)
 
         return EasyDict(
-            generator_input_image_embed=image_embed,
-            generator_input_text_sequences=extended_input_text_sequences,
-            generator_input_ids=generator_input_ids,
+            generator_inputs_embeds = combined_embeddings,
+            # generator_input_text_sequences=extended_input_text_sequences,
+            # generator_input_ids=generator_input_ids,
             generator_attention_mask=generator_attention_mask,
             generator_decoder_input_ids=generator_decoder_input_ids,
             generator_labels=targets,
         )
+
+
+
 
     def forward(self, input_ids: torch.Tensor,
                       attention_mask: torch.Tensor,
@@ -301,9 +312,9 @@ class RagModel(pl.LightningModule):
                     **kwargs):
         
         batch_size = input_ids.shape[0]
-        image_embed = self.image_encoder(image)
+        image_embed = self.image_encoder(image).to(self.device)
         # Retrieve docs for given question inputs
-        retrieval_results = self.retrieve(input_ids, attention_mask, labels, question_ids, input_text_sequences)
+        retrieval_results = self.retrieve(input_ids, attention_mask, labels, question_ids, input_text_sequences, image = image)
         retrieved_docs, doc_scores = retrieval_results.retrieved_docs, retrieval_results.doc_scores
         
         answers = kwargs.get('answers', None)
@@ -337,10 +348,8 @@ class RagModel(pl.LightningModule):
                                             retrieved_docs=retrieved_docs,
                                             labels=labels, n_docs=n_docs)
         
-        
         generator_outputs = self.generator(
-                            inputs_embeds=generator_inputs.generator_input_image_embed,
-                            input_ids=generator_inputs.generator_input_ids,
+                            inputs_embeds=generator_inputs.generator_inputs_embeds,
                             attention_mask=generator_inputs.generator_attention_mask,
                             decoder_input_ids=generator_inputs.generator_decoder_input_ids,
                             return_dict=True)
@@ -400,12 +409,12 @@ class RagModel(pl.LightningModule):
         
         # Get encoder outputs first
         test_batch = EasyDict({
-            'input_ids': generator_inputs.generator_input_ids,
+            #'input_ids': generator_inputs.generator_input_ids,
             'attention_mask': generator_inputs.generator_attention_mask,
             'return_dict': True,
-            'inputs_embeds': generator_inputs.generator_input_image_embed,
+            #'inputs_embeds': generator_inputs.generator_input_image_embed,
+            'inputs_embeds': generator_inputs.generator_inputs_embeds,
         })
-
         encoder_outputs = self.generator.encoder(
             **test_batch
         )

@@ -30,7 +30,6 @@ def get_config_from_json(json_file):
     """
 
     # parse the configurations from the config json file provided
-
     try:
         config_dict = json.loads(_jsonnet.evaluate_file(json_file))
         # EasyDict allows to access dict values as attributes (works recursively).

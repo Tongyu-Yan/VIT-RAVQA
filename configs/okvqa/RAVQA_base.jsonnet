@@ -23,6 +23,13 @@ local override = {
   "ignore_pretrained_weights": [],
   "experiment_name": "default_test",
   "seed": seed,
+
+  "vit_model_config": {
+          "VisionModelConfigClass": "CLIPVisionConfig",
+          "VisionModelClass": "CLIPVisionModel",
+          "VisionModelVersion": "/home/ty308/rds/hpc-work/myvqa/Experiments/V_DPR/train/saved_model/epoch5/map",
+        },
+
   "model_config": {
     "base_model": "RAG",
     "ModelClass": "RagModel", // general class
@@ -36,7 +43,7 @@ local override = {
     "QueryEncoderConfigClass": "DPRConfig", // question encoder
     // "QueryEncoderModelVersion": "facebook/dpr-question_encoder-single-nq-base",
     // "QueryEncoderModelVersion": "../Experiments/Knowledge_Retriever_DPR_dim_768_inbatch_negative_caption_FullCorpus_NewRun/train/saved_model/epoch6/query_encoder",
-    "QueryEncoderModelVersion": "/additional_data/projects/RAVQA/Experiments/OKVQA_DPR_FullCorpus/train/saved_model/epoch6/query_encoder",
+    "QueryEncoderModelVersion": "/home/ty308/rds/hpc-work/myvqa/Experiments/V_DPR/train/saved_model/epoch5/query_encoder",
     
     "GeneratorModelClass": "T5ForConditionalGeneration", // answer generator
     "GeneratorConfigClass": "T5Config",
@@ -125,6 +132,7 @@ local override = {
     "retriever_lr": retriever_lr,
     "adam_epsilon": adam_epsilon,
     "load_epoch": -1,
+    //"load_epoch": -1,
     "load_model_path": "",
     "load_best_model": 0,
     "save_interval":save_interval,
@@ -144,6 +152,7 @@ local override = {
   },
   "test": {
     "evaluation_name": "test_evaluation",
+    //"load_epoch": -1,
     "load_epoch": -1,
     "load_model_path": "",
     "load_best_model": 0,
