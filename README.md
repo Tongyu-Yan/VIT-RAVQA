@@ -31,8 +31,7 @@ place holder
 place holder
 
 ## License
-
-(Include information about your project's license if applicable.)
+Place holder
 
 ## Acknowledgements
 
