@@ -35,7 +35,7 @@ from trainers import *
 
 
 
-def get_checkpoint_model_path(saved_model_path, load_epoch=-1, load_best_model=False, load_model_path=""):
+def get_checkpoint_model_path(saved_model_path, load_epoch=4, load_best_model=False, load_model_path=""):
 
     if load_model_path:
         path_save_model = load_model_path
