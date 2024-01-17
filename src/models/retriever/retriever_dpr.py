@@ -96,7 +96,6 @@ class RetrieverDPR(pl.LightningModule):
         #print('image_embedding', image_embedding.shape)
         #image_embeddings = image_embeddings.view(8, 768)
         
-        # ! Do sum, rather than concatenation
         
         # item encoder
         item_outputs = self.item_encoder(input_ids=item_input_ids,

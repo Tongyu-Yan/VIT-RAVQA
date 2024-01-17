@@ -23,7 +23,7 @@ class MapVIT(pl.LightningModule):
         self.vit = self.vit.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         #self.vit = vit_class.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         self.vit.eval()
-        self.map = nn.ReLU(nn.Linear(768, 768))
+        self.map = nn.Linear(768, 768)
 
     def forward(self, x):
         x = self.vit(x)
