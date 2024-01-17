@@ -283,8 +283,10 @@ class RagModel(pl.LightningModule):
 
         text_embeddings = self.generator.shared(generator_input_ids).to(self.device)
         repeated_image_embed = image_embed.repeat_interleave(n_docs, dim=0).to(self.device)
+        repeated_image_embed = repeated_image_embed.reshape(-1,32,1024)
         combined_embeddings = torch.cat([repeated_image_embed.unsqueeze(1), text_embeddings], dim=1)
-        ones_column = torch.ones((generator_attention_mask.shape[0], 1), dtype=torch.long, device=generator_attention_mask.device).to(self.device)
+        # 32 is the sequence length of image
+        ones_column = torch.ones((generator_attention_mask.shape[0], 32), dtype=torch.long, device=generator_attention_mask.device).to(self.device)
         new_generator_attention_mask = torch.cat([ones_column, generator_attention_mask], dim=1)
         generator_attention_mask = new_generator_attention_mask
 

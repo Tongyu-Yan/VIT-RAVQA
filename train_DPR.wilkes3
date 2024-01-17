@@ -70,7 +70,7 @@ application="python src/main.py configs/okvqa/DPR_v.jsonnet"
 
 #! Run options for the application:
 options="--mode train \
-    --experiment_name V_DPR  \
+    --experiment_name expand_mapping_dpr  \
     --accelerator auto --devices auto  \
     --strategy ddp \
     --modules exhaustive_search_in_testing \
