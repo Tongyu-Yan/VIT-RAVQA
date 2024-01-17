@@ -23,12 +23,13 @@ class image_encoder(pl.LightningModule):
         self.vit = self.vit.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         #self.vit = vit_class.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         self.vit.eval()
-        self.map = nn.Linear(768, 1024)
+        self.linear1 = nn.ReLU(nn.Linear(768, 1024* 16))
+        self.linear2 = nn.Linear(1024 * 16, 1024* 32)
 
     def forward(self, x):
         x = self.vit(x)
         x = x.last_hidden_state[:,0]
-        #x = x.pooler_output
-        return self.map(x)
+        x = self.linear1(x)
+        return self.linear2(x)
 
 # Rest of your code...
