@@ -42,7 +42,6 @@ class MapVIT(pl.LightningModule):
         os.makedirs(save_directory, exist_ok=True)
         model_path = os.path.join(save_directory, 'pytorch_model.bin')
         torch.save(self.state_dict(), model_path)
-
         # Optionally, save the configuration if needed
         config_path = os.path.join(save_directory, 'config.json')
         with open(config_path, 'w') as f:
