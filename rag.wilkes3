@@ -70,10 +70,10 @@ application="python src/main.py configs/okvqa/RAVQA.jsonnet"
 
 #! Run options for the application:
 options="--mode train  \
-    --experiment_name V_RAG \
+    --experiment_name simple_map_rag \
     --accelerator auto --devices 1  \
     --modules force_existence  \
-    --opts train.epochs=5  \
+    --opts train.epochs=6  \
             train.batch_size=1  \
             valid.step_size=1  \
             valid.batch_size=4  \
