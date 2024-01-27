@@ -24,16 +24,17 @@ class MapVIT(pl.LightningModule):
         self.vit = self.vit.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         #self.vit = vit_class.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         self.vit.eval()
-        self.linear1 = nn.Linear(768, 768//2)
-        self.linear2 = nn.Linear(768//2, 768)
+        self.linear1 = nn.Linear(768, 768)#! to keep the DPR the same as previous experiments
+        #self.linear1 = nn.Linear(768, 768//2)
+        #self.linear2 = nn.Linear(768//2, 768)
 
     def forward(self, x):
         x = self.vit(x)
         x = x.last_hidden_state[:,0]
         #x = x.pooler_output
         x = self.linear1(x)
-        x = F.relu(x)
-        x = self.linear2(x)
+        #x = F.relu(x)
+        #x = self.linear2(x)
         return x
 
     def save_pretrained(self, save_directory):

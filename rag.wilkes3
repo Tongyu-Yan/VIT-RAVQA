@@ -70,7 +70,7 @@ application="python src/main.py configs/okvqa/RAVQA.jsonnet"
 
 #! Run options for the application:
 options="--mode train  \
-    --experiment_name V_RAG \
+    --experiment_name expand_dimension_rag \
     --accelerator auto --devices 1  \
     --modules force_existence  \
     --opts train.epochs=5  \
