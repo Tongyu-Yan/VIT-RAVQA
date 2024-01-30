@@ -194,11 +194,12 @@ class DPRExecutor(BaseExecutor):
             'input_ids': sample_batched['input_ids'].to(self.device),
             'attention_mask': sample_batched['attention_mask'].to(self.device),
         })
-        test_batch2 = EasyDict({
-            'image': sample_batched['image'].to(self.device),
-        })
         # batch_size x hidden_states
         query_emb = self.model.generate_query_embeddings(**test_batch)
+        test_batch2 = EasyDict({
+            'image': sample_batched['image'].to(self.device),
+            'text_embedding': query_emb,
+        })
         image_emb = self.model.generate_image_embeddings(**test_batch2)
         
         data_to_return = {
@@ -531,11 +532,10 @@ class DPRExecutor(BaseExecutor):
         self.model.item_encoder.save_pretrained(os.path.join(path_save_model, 'item_encoder'))
         self.data_loader.decoder_tokenizer.save_pretrained(os.path.join(path_save_model, 'item_encoder_tokenizer'))
         #!#############################
-        self.model.map.save_pretrained(os.path.join(path_save_model, 'map'))
+        self.model.image_encoder.save_pretrained(os.path.join(path_save_model, 'image_encoder'))
         #self.model.save_pretrained(path_save_model, 'model')
         logger.info('Model has been saved to {}'.format(path_save_model))
 
-    
     def forward(self, **kwargs):
         return self.model(**kwargs)
 

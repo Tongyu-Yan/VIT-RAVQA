@@ -10,8 +10,8 @@ from transformers import BertModel, BertConfig
 from easydict import EasyDict
 from transformers import CLIPProcessor, CLIPVisionModel, CLIPVisionConfig
 import sys
-sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/mapping_layers')
-from Mp_layer import MapVIT
+sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/image_encoders')
+from image_encoder_dpr import Vis_encoder
 
 
 def get_rank():
@@ -35,7 +35,7 @@ class RetrieverDPR(pl.LightningModule):
         super().__init__()
         self.config = config
         
-        self.map = MapVIT(self.config)
+        self.image_encoder = Vis_encoder(self.config)
         QueryEncoderModelClass = globals()[self.config.model_config.QueryEncoderModelClass]
 
         QueryEncoderConfigClass = globals()[self.config.model_config.QueryEncoderConfigClass]
@@ -91,10 +91,7 @@ class RetrieverDPR(pl.LightningModule):
         if self.query_pooler is not None:
             query_embeddings = self.query_pooler(query_last_hidden_states)
         
-        
-        image_embeddings = self.map(image)
-        #print('image_embedding', image_embedding.shape)
-        #image_embeddings = image_embeddings.view(8, 768)
+        image_embeddings = self.image_encoder(image,query_embeddings)
         
         # ! Do sum, rather than concatenation
         
@@ -193,8 +190,8 @@ class RetrieverDPR(pl.LightningModule):
             'loss': loss,
         })
     
-    def generate_image_embeddings(self, image=None):
-        image_embeddings = self.map(image)
+    def generate_image_embeddings(self, image=None, text_embedding=None):
+        image_embeddings = self.image_encoder(image, text_embedding)
         return image_embeddings
 
     def generate_query_embeddings(

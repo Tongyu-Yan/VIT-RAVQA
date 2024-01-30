@@ -21,9 +21,9 @@ from transformers import BertModel, BertConfig
 from transformers.models.rag.retrieval_rag import CustomHFIndex, CanonicalHFIndex
 import pytorch_lightning as pl
 import time
-sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/mapping_layers')
-from image_encoder import image_encoder
-from Mp_layer import MapVIT
+sys.path.append('/home/ty308/rds/hpc-work/myvqa/Tony-VQA/src/models/image_encoders')
+from image_encoder_rag import image_encoder
+from image_encoder_dpr import Vis_encoder
 
 class RagModel(pl.LightningModule):
     '''
