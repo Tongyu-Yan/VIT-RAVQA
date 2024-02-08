@@ -1,5 +1,6 @@
 import pytorch_lightning as pl
 import torch.nn as nn
+import torch.nn.functional as F
 from urllib.request import urlretrieve
 import numpy as np
 import os
@@ -22,32 +23,31 @@ class Vis_encoder(pl.LightningModule):
         self.vit = vit_class(vit_config)
         self.vit = self.vit.from_pretrained(self.config.vit_model_config.VisionModelVersion)
         #self.vit = vit_class.from_pretrained(self.config.vit_model_config.VisionModelVersion)
-        self.vit.eval()
-        self.linear1 = nn.Linear(768, 768 * 16)
+        #self.vit.eval()
+        for param in self.vit.parameters():
+            param.requires_grad = False
+        self.linear1 = nn.Linear(768, 768 * 4)
         self.relu = nn.ReLU()
-        self.linear2 = nn.Linear(768 * 16, 768 * 32)
-        self.t_embedding = nn.Embedding(1, 768)
-        self.i_embedding = nn.Embedding(1, 768)
+        self.linear2 = nn.Linear(768 * 4, 768)
         self.q = nn.Linear(768, 768)
         self.k = nn.Linear(768, 768)
         self.v = nn.Linear(768, 768)
-        self.v2embed = nn.Linear(768*768, 768)
+
 
     def forward(self, x, text_embedding):
         x = self.vit(x)
         image_embedding = x.last_hidden_state[:,0]
-        image_embed = self.i_embedding(image_embedding)
-        text_embed = self.t_embedding(text_embedding)
+        image_embedding = self.linear1(image_embedding)
+        image_embedding = self.relu(image_embedding)
+        image_embed = self.linear2(image_embedding)
+        text_embed = text_embedding
         q = self.q(image_embed)
         k = self.k(text_embed)
-        v = self.v(text_embed)
-        score = torch.matmul(q, k.transpose(1, 2))
-        score = score / np.sqrt(768)
-        score = torch.softmax(score, dim=-1)
-        output = torch.matmul(score, v)
-        output = output.reshape(-1, 768*768)
-        output = self.v2embed(output)
-        return output
+        v = self.v(image_embed)
+        score = torch.einsum('ij,ij->ij', q, k) / np.sqrt(768)  # Element-wise multiplication and scaling
+        attention_weights = F.sigmoid(score)  # Compute the attention weights
+        weighted_v = attention_weights * v  # Apply the attention weights to the value
+        return weighted_v
 
     def save_pretrained(self, save_directory):
         """
