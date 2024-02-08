@@ -69,9 +69,9 @@ ERR="/home/ty308/rds/hpc-work/myvqa/logs/to/errorfile.$JOBID.err"
 application="python src/tools/prepare_faiss_index.py"
 
 options="--csv_path /home/ty308/rds/rds-cvnlp-hirYTW1FQIw/shared_space/vqa_data/KBVQA_data/ok-vqa/pre-extracted_features/passages/okvqa_full_corpus_title.csv \
-    --output_dir /home/ty308/rds/hpc-work/data/ok-vqa/pre-extracted_features/faiss/ok-vqa-passages-full-new-framework \
-    --dpr_ctx_encoder_model_name /home/ty308/rds/hpc-work/myvqa/Experiments/V_DPR/train/saved_model/epoch5/item_encoder \
-    --dpr_ctx_encoder_tokenizer_name /home/ty308/rds/hpc-work/myvqa/Experiments/V_DPR/train/saved_model/epoch5/item_encoder_tokenizer"
+    --output_dir /home/ty308/rds/hpc-work/data/ok-vqa/pre-extracted_features/faiss_attention/ok-vqa-passages-full-new-framework \
+    --dpr_ctx_encoder_model_name /home/ty308/rds/hpc-work/myvqa/Experiments/attention_DPR/train/saved_model/epoch5/item_encoder \
+    --dpr_ctx_encoder_tokenizer_name /home/ty308/rds/hpc-work/myvqa/Experiments/attention_DPR/train/saved_model/epoch5/item_encoder_tokenizer"
 
 
 #! Work directory (i.e. where the job will run):

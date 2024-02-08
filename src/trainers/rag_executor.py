@@ -32,7 +32,6 @@ from .base_executor import BaseExecutor
 from models.rag.rag_model import RagModel
 from utils.dirs import *
 
-
 class RagExecutor(BaseExecutor):
     def __init__(self, config, data_loader):
         super().__init__(config, data_loader)
