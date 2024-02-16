@@ -558,7 +558,7 @@ class RagModel(pl.LightningModule):
                     # print(-loss[b])
                     # print(answer_proposals)
                 outputs = torch.cat(outputs)
-
+                
         return EasyDict(outputs=outputs, 
                         retrieved_docs=retrieved_docs, 
                         doc_scores=doc_scores.cpu().detach().numpy(),

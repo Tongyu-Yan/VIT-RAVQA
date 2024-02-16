@@ -114,9 +114,10 @@ def main(config):
         'callbacks': [checkpoint_callback],
         'plugins': plugins,
         'log_every_n_steps': 10,
-        # 'accelerator': "cpu", 
-        # 'strategy': "ddp",
-        # 'devices': 2,
+        #! Belows are for multi-gpu training
+        'accelerator': "gpu", 
+        'strategy': "ddp",
+        'devices': 2,
     }
 
     trainer = Trainer.from_argparse_args(args, **additional_args)
@@ -141,7 +142,19 @@ def main(config):
         if not checkpoint_to_load:
             raise FileNotFoundError("No checkpoint found. Please check your config file.")
 
-    
+# #! Try to load the optimiser and scheduler states.
+#     if checkpoint_to_load:
+#         checkpoint = torch.load(checkpoint_to_load)
+
+#         # Load optimizer and scheduler states
+#         trainer.optimizers[0].load_state_dict(checkpoint['optimizer_state_dict'])
+#         trainer.lr_schedulers[0]['scheduler'].load_state_dict(checkpoint['scheduler_state_dict'])
+
+#         # Other operations based on your checkpoint information
+#         epoch = checkpoint['epoch']
+#         logger.info(f"Checkpoint loaded from epoch {epoch}")
+
+
     # init data loader manager
     data_loader_manager.build_dataset()
     data_loader_manager.set_dataloader()

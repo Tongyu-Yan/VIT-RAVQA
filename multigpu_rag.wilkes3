@@ -17,10 +17,10 @@
 #SBATCH --nodes=1
 #! How many (MPI) tasks will there be in total?
 #! Note probably this should not exceed the total number of GPUs in use.
-#SBATCH --ntasks=1
+#SBATCH --ntasks=2
 #! Specify the number of GPUs per node (between 1 and 4; must be 4 if nodes>1).
 #! Note that the job submission script will enforce no more than 32 cpus per GPU.
-#SBATCH --gres=gpu:1
+#SBATCH --gres=gpu:2
 #! How much wallclock time will be required?
 #SBATCH --time=12:00:00
 #! What types of email messages do you wish to receive?
@@ -71,9 +71,9 @@ application="python src/main.py configs/okvqa/RAVQA.jsonnet"
 #! Run options for the application:
 options="--mode train  \
     --experiment_name attention_RAG \
-    --accelerator auto --devices 1  \
+    --accelerator auto --devices 2  \
     --modules force_existence  \
-    --opts train.epochs=2  \
+    --opts train.epochs=8  \
             train.batch_size=1  \
             valid.step_size=1  \
             valid.batch_size=4  \

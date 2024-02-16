@@ -26,7 +26,6 @@ from torch.utils.tensorboard import SummaryWriter
 
 import pytorch_lightning as pl
 from pytorch_lightning import Trainer, seed_everything
-
 from .metrics_processors import MetricsProcessor
 from .base_executor import BaseExecutor
 from models.rag.rag_model import RagModel
@@ -44,7 +43,7 @@ class RagExecutor(BaseExecutor):
 
         ModelClass = globals()[self.config.model_config.ModelClass]
 
-        self.model = ModelClass(config, data_loader)
+        self.model = ModelClass(config, data_loader).to(self.device)
         self.model.init_retrieval()
         
 
@@ -160,6 +159,15 @@ class RagExecutor(BaseExecutor):
         # and the average across the epoch, to the progress bar and logger
         self.log("train/loss", batch_loss, on_step=True, on_epoch=True, logger=True)
         
+        # if self.current_epoch % 2 == 0 and batch_idx == len(self.train_data_loader) - 1:
+        #     save_path = os.path.join(self.config.saved_model_path, f'optimizer_scheduler_checkpoint_epoch_{self.current_epoch}.pth')
+        #     torch.save({
+        #         'epoch': self.current_epoch,
+        #         'optimizer_state_dict': self.optimizer.state_dict(),
+        #         'scheduler_state_dict': self.lr_scheduler['scheduler'].state_dict(),
+        #         # Add other checkpoint information if needed
+        #     }, save_path)
+
         data_to_return = {
             'loss': batch_loss,
         }
