@@ -13,6 +13,8 @@ from easydict import EasyDict
 from tqdm import tqdm
 
 import wandb
+import pickle
+from utils.dirs import *
 import logging
 logger = logging.getLogger(__name__)
 
@@ -286,6 +288,35 @@ class MetricsProcessor():
             ##############################
             mode = data_dict['mode']
             answers = data_dict['batch_predictions']
+
+            torch.distributed.barrier()
+            num_processes = torch.distributed.get_world_size()
+
+            if not os.path.exists(self.config.ckpt_dir):
+                create_dirs([self.config.ckpt_dir])
+
+            # save tmp files for each process
+            tmp_dir = os.path.join(self.config.ckpt_dir, f"tmp_{self.global_rank}.pkl")
+            with open(tmp_dir, 'wb') as f:
+                pickle.dump(answers, f)
+            logger.info(f"Save tmp file {tmp_dir} for process {self.global_rank}.")
+            
+            torch.distributed.barrier()
+            # load tmp files for each process
+            all_answers = []
+            for i in range(num_processes):
+                tmp_dir = os.path.join(self.config.ckpt_dir, f"tmp_{i}.pkl")
+                with open(tmp_dir, 'rb') as f:
+                    all_answers.extend(pickle.load(f))
+                logger.info(f"Load tmp file {tmp_dir} for process {i}.")
+            
+            torch.distributed.barrier()
+            logger.info(f"extended answers from {len(answers)} to {len(all_answers)}")
+            answers = all_answers
+
+            # Convert all question_id into int before passing to VQA helper
+            for ans in answers:
+                ans['question_id'] = int(ans['question_id'])
 
             # create vqa object and vqaRes object
             vqa_helper = self.data_loader.data.okvqa_data.vqa_helpers[mode]

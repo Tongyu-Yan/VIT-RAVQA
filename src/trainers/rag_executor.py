@@ -159,15 +159,6 @@ class RagExecutor(BaseExecutor):
         # and the average across the epoch, to the progress bar and logger
         self.log("train/loss", batch_loss, on_step=True, on_epoch=True, logger=True)
         
-        # if self.current_epoch % 2 == 0 and batch_idx == len(self.train_data_loader) - 1:
-        #     save_path = os.path.join(self.config.saved_model_path, f'optimizer_scheduler_checkpoint_epoch_{self.current_epoch}.pth')
-        #     torch.save({
-        #         'epoch': self.current_epoch,
-        #         'optimizer_state_dict': self.optimizer.state_dict(),
-        #         'scheduler_state_dict': self.lr_scheduler['scheduler'].state_dict(),
-        #         # Add other checkpoint information if needed
-        #     }, save_path)
-
         data_to_return = {
             'loss': batch_loss,
         }
@@ -351,7 +342,7 @@ class RagExecutor(BaseExecutor):
         # Add to loggers
         for metric, value in metrics_to_log.items():
             if type(value) in [float, int, np.float64]:
-                self.log(metric, float(value), logger=True)
+                self.log(metric, float(value), logger=True, sync_dist = True)
             else:
                 logger.info(f'{metric} is not a type that can be logged, skippped.')
         

@@ -91,6 +91,8 @@ def process_config(args):
     config.log_path = os.path.join(config.EXPERIMENT_FOLDER, config.experiment_name, config.mode)
     config.experiment_path = os.path.join(config.EXPERIMENT_FOLDER, config.experiment_name)
     config.saved_model_path = os.path.join(config.EXPERIMENT_FOLDER, config.experiment_name, "train", 'saved_model')
+    #! Changed the ckpt_dir here
+    config.ckpt_dir = os.path.join(config.EXPERIMENT_FOLDER, config.experiment_name, "train", 'ckpt_pth')
     if config.mode == "train":
         config.imgs_path = os.path.join(config.EXPERIMENT_FOLDER, config.experiment_name, "train", 'imgs')
     else:
